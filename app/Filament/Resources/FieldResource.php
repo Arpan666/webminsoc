@@ -38,10 +38,19 @@ class FieldResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->searchable()->sortable(),
-                Tables\Columns\ImageColumn::make('image_path')->square(),
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable()
+                    ->sortable(),
+
+                Tables\Columns\ImageColumn::make('image_path')
+                    ->label('Foto Lapangan')
+                    ->disk('public')  // cukup ini saja
+                    ->height(60)      // ukuran foto
+                    ->square(),       // opsional agar rapi
             ]);
     }
+
+
 
     public static function getRelations(): array
     {

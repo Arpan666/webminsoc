@@ -3,41 +3,51 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PriceSettingResource\Pages;
-use App\Filament\Resources\PriceSettingResource\RelationManagers;
 use App\Models\PriceSetting;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PriceSettingResource extends Resource
 {
     protected static ?string $model = PriceSetting::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
-// app/Filament/Resources/PriceSettingResource.php (Hanya bagian form)
+    protected static ?string $navigationLabel = 'Pengaturan Harga';
+    protected static ?string $pluralLabel = 'Pengaturan Harga Lapangan';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\Select::make('field_id')
+                    ->label('Nama Lapangan')
                     ->relationship('field', 'name')
+                    ->searchable()
                     ->required(),
+
                 Forms\Components\Select::make('day_type')
+                    ->label('Jenis Hari')
                     ->options([
-                        'weekday' => 'Hari Kerja (Senin-Jumat)',
-                        'weekend' => 'Akhir Pekan (Sabtu-Minggu)',
-                    ])->required(),
-                Forms\Components\TimePicker::make('start_time')->required(),
-                Forms\Components\TimePicker::make('end_time')->required(),
+                        'weekday' => 'Weekday',
+                        'weekend' => 'Weekend',
+                    ])
+                    ->required(),
+
                 Forms\Components\TextInput::make('price_per_hour')
+                    ->label('Harga per Jam')
                     ->numeric()
                     ->prefix('Rp')
+                    ->required(),
+
+                Forms\Components\TimePicker::make('start_time')
+                    ->label('Waktu Mulai')
+                    ->required(),
+
+                Forms\Components\TimePicker::make('end_time')
+                    ->label('Waktu Selesai')
                     ->required(),
             ]);
     }
@@ -46,13 +56,34 @@ class PriceSettingResource extends Resource
     {
         return $table
             ->columns([
-                //
-            ])
-            ->filters([
-                //
+                Tables\Columns\TextColumn::make('field.name')
+                    ->label('Nama Lapangan')
+                    ->sortable()
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('day_type')
+                    ->label('Jenis Hari')
+                    ->badge()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('price_per_hour')
+                    ->label('Harga / Jam')
+                    ->money('IDR')
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('start_time')
+                    ->label('Mulai')
+                    ->time('H:i')
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('end_time')
+                    ->label('Selesai')
+                    ->time('H:i')
+                    ->sortable(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -63,17 +94,15 @@ class PriceSettingResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPriceSettings::route('/'),
+            'index'  => Pages\ListPriceSettings::route('/'),
             'create' => Pages\CreatePriceSetting::route('/create'),
-            'edit' => Pages\EditPriceSetting::route('/{record}/edit'),
+            'edit'   => Pages\EditPriceSetting::route('/{record}/edit'),
         ];
     }
 }

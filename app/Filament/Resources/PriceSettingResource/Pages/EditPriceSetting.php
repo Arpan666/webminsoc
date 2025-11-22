@@ -13,7 +13,7 @@ class EditPriceSetting extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make(), // ✔ Tombol delete di halaman edit
         ];
     }
 }

@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-use Filament\Models\Contracts\FilamentUser; // untuk akses Filament
-use Filament\Panel; // untuk pemeriksaan panel
+use Filament\Models\Contracts\FilamentUser; 
+use Filament\Panel;
+use Illuminate\Database\Eloquent\Relations\HasMany; // <-- Tambahkan ini
 
 class User extends Authenticatable implements MustVerifyEmail, FilamentUser
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
@@ -39,8 +39,6 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
 
     /**
      * Attribute casting.
-     *
-     * @return array<string, string>
      */
     protected function casts(): array
     {
@@ -51,7 +49,7 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     }
 
     /**
-     * Filament panel access control.
+     * Akses panel Filament.
      */
     public function canAccessPanel(Panel $panel): bool
     {
@@ -60,7 +58,15 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
             return $this->role === 'admin';
         }
 
-        // Panel lain (misalnya panel user), izinkan
         return true;
+    }
+
+    /**
+     * Relasi one-to-many:
+     * Satu User memiliki banyak Booking.
+     */
+    public function bookings(): HasMany
+    {
+        return $this->hasMany(Booking::class);
     }
 }
