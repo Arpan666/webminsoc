@@ -1,0 +1,12 @@
+<?php
+
+namespace App\Filament\Resources\PriceSettingResource\Pages;
+
+use App\Filament\Resources\PriceSettingResource;
+use Filament\Actions;
+use Filament\Resources\Pages\CreateRecord;
+
+class CreatePriceSetting extends CreateRecord
+{
+    protected static string $resource = PriceSettingResource::class;
+}
