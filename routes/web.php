@@ -13,10 +13,17 @@ use App\Http\Controllers\CustomerBookingController;
 // ------------------
 
 // Halaman utama (daftar lapangan)
-Route::get('/', [FieldController::class, 'index'])->name('home');
+Route::get('/', [FieldController::class, 'index'])->name('welcome');
+
+// routes/web.php
+Route::get('/contact', [App\Http\Controllers\ContactController::class, 'index'])->name('contact-us');
 
 // Detail lapangan
 Route::get('/lapangan/{field}', [FieldController::class, 'show'])->name('field.detail');
+
+Route::get('/location', [App\Http\Controllers\LocationController::class, 'index'])->name('location');
+
+Route::get('/about', [App\Http\Controllers\AboutController::class, 'index'])->name('about-us');
 
 // ------------------
 // ROUTE USER LOGIN

@@ -2,19 +2,21 @@
 
     <div class="pt-16">
 
-        <section id="hero" class="relative h-[85vh] flex items-center justify-center overflow-hidden bg-dark-bg">
-            <div class="absolute inset-0 z-0">
-                <img src="/images/sporty-minisoccer-bg.jpg" 
-                     alt="Latar Belakang Lapangan MiniSoccer" 
-                     class="w-full h-full object-cover opacity-20"> 
-            </div>
-            <div class="absolute inset-0 bg-black/60 z-10"></div>
+        {{-- Hero Section --}}
+        {{-- Menggunakan style="background-image: url(...)" untuk menghindari alt text muncul --}}
+        {{-- Pastikan gambar sporty-minisoccer-bg.jpg ada di folder public/images/ --}}
+        <section id="hero" 
+            class="relative h-[85vh] flex items-center justify-center overflow-hidden bg-dark-bg bg-cover bg-center"
+            style="background-image: url('{{ asset('images/sporty-minisoccer-bg.jpg') }}');">
+            
+            {{-- Overlay Hitam/Gelap (diatur 80% untuk efek gelap yang dramatis) --}}
+            <div class="absolute inset-0 bg-black/80 z-10"></div> 
 
             <div class="relative z-20 text-center max-w-4xl px-4">
                 <p class="text-neon-green text-lg font-bold uppercase tracking-widest mb-4 animate-pulse">
                     #BOOKINGTANPARIBET
                 </p>
-                <h1 class="text-6xl md:text-8xl font-extrabold uppercase leading-tight text-white mb-6">
+                <h1 class="text-5xl md:text-7xl font-extrabold uppercase leading-tight text-white mb-6">
                     Ayo <span class="text-neon-green">Main</span>, Jangan Cuma Nonton.
                 </h1>
                 <p class="text-gray-300 text-xl mb-10 tracking-wide">
@@ -22,12 +24,13 @@
                 </p>
                 
                 <a href="#lapangan" class="inline-block py-4 px-10 bg-neon-green text-dark-bg rounded-full font-bold uppercase text-lg tracking-wider 
-                                          transition duration-300 transform hover:scale-105 shadow-neon hover:shadow-2xl">
+                                            transition duration-300 transform hover:scale-105 shadow-neon hover:shadow-2xl">
                     Booking Sekarang!
                 </a>
             </div>
         </section>
 
+        {{-- Section Lapangan Tersedia --}}
         <section id="lapangan" class="py-20 bg-dark-bg">
             <div class="container mx-auto px-4 max-w-7xl">
                 <h2 class="text-4xl font-extrabold text-white text-center mb-12 uppercase tracking-wider">
@@ -39,7 +42,7 @@
                     @forelse ($fields as $field)
                         <a href="{{ url('lapangan/' . $field->id) }}" class="block">
                             <div class="bg-dark-card rounded-xl border border-neon-green/10 shadow-xl shadow-black/50 
-                                        hover:shadow-neon transition duration-300 overflow-hidden transform hover:scale-[1.01] hover:border-neon-green/50">
+                                         hover:shadow-neon transition duration-300 overflow-hidden transform hover:-translate-y-1 hover:border-neon-green/50">
                                 
                                 <div class="relative h-60 w-full">
                                     @if ($field->image_path)
@@ -72,7 +75,7 @@
                                     </div>
                                     
                                     <button class="mt-6 w-full py-3 border border-neon-green text-neon-green rounded-lg font-bold uppercase 
-                                                   hover:bg-neon-green hover:text-dark-bg transition duration-300 tracking-wider">
+                                                     hover:bg-neon-green hover:text-dark-bg transition duration-300 tracking-wider">
                                         Lihat Slot & Detail
                                     </button>
                                 </div>
@@ -87,6 +90,7 @@
             </div>
         </section>
 
+        {{-- Section Keunggulan --}}
         <section id="keunggulan" class="py-20 bg-dark-card border-t border-b border-neon-green/20">
             <div class="container mx-auto px-4 max-w-7xl">
                 <h2 class="text-4xl font-extrabold text-white text-center mb-16 uppercase tracking-wider">
@@ -95,19 +99,19 @@
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
                     
-                    <div class="p-8 bg-dark-bg rounded-xl shadow-xl hover:shadow-neon transition duration-300 transform hover:-translate-y-1">
+                    <div class="p-8 bg-dark-bg rounded-xl shadow-xl hover:shadow-neon transition duration-300 transform hover:-translate-y-2">
                         <svg class="w-12 h-12 text-neon-green mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         <h3 class="text-xl font-bold text-white mb-2">Booking Kilat</h3>
                         <p class="text-gray-400">Pesan slot lapangan hanya dalam 3 langkah cepat. Tidak ada penantian lama.</p>
                     </div>
 
-                    <div class="p-8 bg-dark-bg rounded-xl shadow-xl hover:shadow-neon transition duration-300 transform hover:-translate-y-1">
+                    <div class="p-8 bg-dark-bg rounded-xl shadow-xl hover:shadow-neon transition duration-300 transform hover:-translate-y-2">
                         <svg class="w-12 h-12 text-neon-green mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                         <h3 class="text-xl font-bold text-white mb-2">Pembayaran Aman</h3>
                         <p class="text-gray-400">Didukung sistem pembayaran terverifikasi, transaksi Anda 100% aman.</p>
                     </div>
 
-                    <div class="p-8 bg-dark-bg rounded-xl shadow-xl hover:shadow-neon transition duration-300 transform hover:-translate-y-1">
+                    <div class="p-8 bg-dark-bg rounded-xl shadow-xl hover:shadow-neon transition duration-300 transform hover:-translate-y-2">
                         <svg class="w-12 h-12 text-neon-green mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M17 17h.01"></path></svg>
                         <h3 class="text-xl font-bold text-white mb-2">Slot Real-time</h3>
                         <p class="text-gray-400">Jadwal lapangan selalu terupdate secara instan. Tidak ada lagi *double booking*.</p>
@@ -116,7 +120,8 @@
                 </div>
             </div>
         </section>
-
+        
+        {{-- Footer --}}
         <footer class="bg-dark-card border-t border-neon-green/30 py-10">
             <div class="container mx-auto px-4 max-w-7xl">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -134,7 +139,7 @@
                         <ul class="space-y-2 text-gray-400 text-sm">
                             <li><a href="#lapangan" class="hover:text-neon-green transition duration-200">Lapangan</a></li>
                             <li><a href="#keunggulan" class="hover:text-neon-green transition duration-200">Keunggulan</a></li>
-                            <li><a href="{{ route('login') }}" class="hover:text-neon-green transition duration-200">Login</a></li>
+                            <li><a href="{{ route('login') ?? '#' }}" class="hover:text-neon-green transition duration-200">Login</a></li>
                         </ul>
                     </div>
                     
@@ -143,7 +148,7 @@
                         <ul class="space-y-2 text-gray-400 text-sm">
                             <li><a href="#" class="hover:text-neon-green transition duration-200">FAQ</a></li>
                             <li><a href="#" class="hover:text-neon-green transition duration-200">Kebijakan Privasi</a></li>
-                            <li><a href="#" class="hover:text-neon-green transition duration-200">Kontak Kami</a></li>
+                            <li><a href="{{ route('contact-us') ?? '#' }}" class="hover:text-neon-green transition duration-200">Kontak Kami</a></li>
                         </ul>
                     </div>
                     
@@ -152,9 +157,8 @@
                         <p class="text-gray-400 text-sm">Email: support@minisoccer.id</p>
                         <p class="text-gray-400 text-sm mt-2">Telp: (021) 123-4567</p>
                         <div class="flex space-x-3 mt-4 text-neon-green">
-                            <svg class="w-6 h-6 hover:text-white transition duration-200" fill="currentColor" viewBox="0 0 24 24"></svg>
-                            <svg class="w-6 h-6 hover:text-white transition duration-200" fill="currentColor" viewBox="0 0 24 24"></svg>
-                        </div>
+                            {{-- Placeholder untuk ikon media sosial --}}
+                            <svg class="w-6 h-6 hover:text-white transition duration-200" fill="currentColor" viewBox="0 0 24 24"><path d="M7 10v4h3v7h4v-7h3l1-4h-4V8a2 2 0 012-2h2V2h-4a5 5 0 00-5 5v3H7z"/></svg> <svg class="w-6 h-6 hover:text-white transition duration-200" fill="currentColor" viewBox="0 0 24 24"><path d="M22 4.01c-.885.39-1.83.65-2.82.77.962-.57 1.706-1.48 2.05-2.55-.907.54-1.916.93-2.98.96C18.33 3.49 17.2 3 16 3c-2.484 0-4.5 2.016-4.5 4.5 0 .35.04.69.11 1.02-3.73-.19-7.03-1.97-9.24-4.68-.387.66-.58 1.4-.58 2.21 0 1.56.79 2.94 1.99 3.75-.72-.02-1.4-.22-2-.56v.05c0 2.18 1.55 4 3.6 4.42-.36.1-.73.15-1.12.15-.27 0-.53-.03-.79-.08.57 1.79 2.24 3.1 4.2 3.14-1.54 1.2-3.48 1.92-5.59 1.92-.36 0-.71-.02-1.06-.06 2 1.28 4.38 2.03 6.88 2.03 8.27 0 12.77-6.86 12.77-12.86 0-.2-.01-.4-.02-.6.94-.68 1.76-1.53 2.4-2.5z"/></svg> </div>
                     </div>
                     
                 </div>
