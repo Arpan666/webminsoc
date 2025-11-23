@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\FieldController;
 use App\Models\Booking;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\CustomerBookingController;
 
 // ------------------
 // ROUTE APLIKASI UTAMA
@@ -53,6 +54,13 @@ Route::get('/booking/{booking}/payment', [PaymentController::class, 'show'])
 Route::post('/booking/{booking}/payment', [PaymentController::class, 'store'])
     ->middleware(['auth', 'verified'])
     ->name('payment.store');
+
+Route::middleware(['auth'])->group(function () {
+    // ... route profile, dashboard, dll
+    
+    // ROUTE BARU UNTUK RIWAYAT BOOKING
+    Route::get('/my-bookings', [CustomerBookingController::class, 'index'])->name('my-bookings.index');
+});
 
 // ------------------
 // ROUTE AUTH DEFAULT (Breeze / Jetstream / Fortify)

@@ -34,13 +34,13 @@ class BookingCalendar extends Component
         $this->loadAvailableSlots();
     }
 
-    // Dipanggil saat properti $selectedDate atau $duration berubah
     public function updated($propertyName)
     {
         if ($propertyName === 'selectedDate') {
-            $this->selectedTime = null; // Reset pilihan waktu saat tanggal berubah
+            $this->selectedTime = null;
             $this->loadAvailableSlots();
         }
+
         if ($propertyName === 'duration' || $propertyName === 'selectedTime') {
             $this->calculateTotalPrice();
         }
@@ -51,9 +51,10 @@ class BookingCalendar extends Component
         $this->selectedTime = $time;
         $this->calculateTotalPrice();
     }
-    
-    // --- LOGIKA UTAMA HARGA ---
-    
+
+    // =====================================================================
+    //  HITUNG TOTAL HARGA (FIXED)
+    // =====================================================================
     public function calculateTotalPrice()
     {
         if (!$this->selectedTime || !$this->duration) {
@@ -61,47 +62,49 @@ class BookingCalendar extends Component
             return;
         }
 
-        $date = Carbon::parse($this->selectedDate);
-        $dayType = $date->isWeekend() ? 'weekend' : 'weekday'; // Tentukan jenis hari
-        $startTime = Carbon::parse($this->selectedTime);
+        $duration = (int)$this->duration; // FIX: pastikan integer
 
-        // Cari pengaturan harga yang berlaku
-        $priceSetting = PriceSetting::where('field_id', $this->field->id)
-            ->where('day_type', $dayType)
-            ->where('start_time', '<=', $startTime->format('H:i:s'))
-            ->where('end_time', '>=', $startTime->copy()->addHours($this->duration)->subMinute()->format('H:i:s')) // Cek durasi total
-            ->orderBy('price_per_hour', 'desc') // Ambil harga tertinggi jika ada tumpang tindih
-            ->first();
-            
-        if ($priceSetting) {
-            $this->totalPrice = $priceSetting->price_per_hour * $this->duration;
-        } else {
-            $this->totalPrice = 0; // Atau berikan harga default jika tidak ada setting
-        }
-    }
-    
-    // --- LOGIKA UTAMA SLOT ---
-
-    public function loadAvailableSlots()
-    {
-        $this->availableSlots = [];
-        
         $date = Carbon::parse($this->selectedDate);
         $dayType = $date->isWeekend() ? 'weekend' : 'weekday';
 
-        // 1. Ambil pengaturan harga untuk hari ini
+        $startTime = Carbon::parse($this->selectedTime);
+        $endTime = $startTime->copy()->addHours($duration);
+
+        $priceSetting = PriceSetting::where('field_id', $this->field->id)
+            ->where('day_type', $dayType)
+            ->where('start_time', '<=', $startTime->format('H:i:s'))
+            ->where('end_time', '>=', $endTime->subMinute()->format('H:i:s')) // FIX: aman
+            ->orderBy('price_per_hour', 'desc')
+            ->first();
+
+        if ($priceSetting) {
+            $this->totalPrice = $priceSetting->price_per_hour * $duration;
+        } else {
+            $this->totalPrice = 0;
+        }
+    }
+
+    // =====================================================================
+    //  LOAD AVAILABLE SLOTS (STRUKTUR KAMU, TAPI SUDAH DIPERBAIKI)
+    // =====================================================================
+    public function loadAvailableSlots()
+    {
+        $this->availableSlots = [];
+
+        $date = Carbon::parse($this->selectedDate);
+        $dayType = $date->isWeekend() ? 'weekend' : 'weekday';
+
         $settings = PriceSetting::where('field_id', $this->field->id)
-                                ->where('day_type', $dayType)
-                                ->get();
-                                
-        // 2. Ambil semua booking yang sudah dikonfirmasi pada tanggal ini
-        $bookedSlots = Booking::where('field_id', $this->field->id)
-                              ->whereDate('start_time', $this->selectedDate)
-                              ->whereIn('status', ['confirmed', 'pending_verification']) // Slot yang masih dipertimbangkan
-                              ->get();
-                              
+            ->where('day_type', $dayType)
+            ->get();
+
+        $bookings = Booking::where('field_id', $this->field->id)
+            ->whereDate('start_time', $this->selectedDate)
+            ->whereIn('status', ['confirmed', 'pending_verification'])
+            ->get();
+
         $allBookedSlots = [];
-        foreach ($bookedSlots as $booking) {
+        foreach ($bookings as $booking) {
             $start = Carbon::parse($booking->start_time);
             $end = Carbon::parse($booking->end_time);
             while ($start < $end) {
@@ -110,18 +113,17 @@ class BookingCalendar extends Component
             }
         }
 
-        // 3. Iterasi melalui Price Settings untuk menghasilkan slot
         foreach ($settings as $setting) {
             $start = Carbon::parse($setting->start_time);
             $end = Carbon::parse($setting->end_time);
-            
-            // Batasi slot agar tidak menampilkan masa lalu pada hari ini
-            $currentTime = now()->addHour(); // Beri margin 1 jam dari sekarang
+
+            $currentTime = now()->addHour();
+
             if ($date->isToday()) {
                 if ($start->lessThan($currentTime)) {
                     $start = $currentTime;
-                    // Bulatkan ke jam berikutnya jika perlu (misal 14:30 jadi 15:00)
                     $start->minute(0)->second(0);
+
                     if ($start->lessThan(now())) {
                         $start->addHour();
                     }
@@ -131,62 +133,58 @@ class BookingCalendar extends Component
             while ($start < $end) {
                 $slotTime = $start->format('H:i');
 
-                // Cek ketersediaan: Slot ini tidak boleh sudah di-booking
                 if (!in_array($slotTime, $allBookedSlots)) {
                     $this->availableSlots[] = ['time' => $slotTime];
                 }
+
                 $start->addHour();
             }
         }
-        
-        // Urutkan slot
+
         usort($this->availableSlots, fn($a, $b) => strcmp($a['time'], $b['time']));
         $this->availableSlots = array_unique($this->availableSlots, SORT_REGULAR);
     }
-    
-    // --- LOGIKA CREATE BOOKING ---
-    
+
+    // =====================================================================
+    //  CREATE BOOKING (FIXED)
+    // =====================================================================
     public function createBooking()
     {
-        // 1. Validasi
         $this->validate();
-        
-        // 2. Cek apakah user sudah login
+
         if (!Auth::check()) {
             return redirect()->route('login');
         }
 
-        // 3. Persiapan data
+        $duration = (int)$this->duration;
+
         $startTime = Carbon::parse($this->selectedDate . ' ' . $this->selectedTime);
-        $endTime = $startTime->copy()->addHours($this->duration);
-        
-        // Double-check: Pastikan slot masih kosong sebelum disimpan
+        $endTime = $startTime->copy()->addHours($duration);
+
         $isBooked = Booking::where('field_id', $this->field->id)
-                           ->where(function ($query) use ($startTime, $endTime) {
-                               $query->where('start_time', '<', $endTime)
-                                     ->where('end_time', '>', $startTime);
-                           })
-                           ->whereIn('status', ['confirmed', 'pending_verification'])
-                           ->exists();
-                           
+            ->where(function ($query) use ($startTime, $endTime) {
+                $query->where('start_time', '<', $endTime)
+                    ->where('end_time', '>', $startTime);
+            })
+            ->whereIn('status', ['confirmed', 'pending_verification'])
+            ->exists();
+
         if ($isBooked) {
             session()->flash('error', 'Slot yang Anda pilih baru saja dipesan.');
-            $this->loadAvailableSlots(); // Refresh slot
+            $this->loadAvailableSlots();
             return;
         }
 
-        // 4. Buat Booking
         $booking = Booking::create([
             'user_id' => Auth::id(),
             'field_id' => $this->field->id,
             'start_time' => $startTime,
             'end_time' => $endTime,
             'total_price' => $this->totalPrice,
-            'payment_method' => 'Transfer Bank', // Default, bisa diubah
-            'status' => 'pending_verification', // Status awal
+            'payment_method' => 'Transfer Bank',
+            'status' => 'pending_verification',
         ]);
 
-        // 5. Redirect ke Halaman Pembayaran
         return redirect()->route('payment.show', $booking->id);
     }
 
