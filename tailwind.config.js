@@ -3,7 +3,7 @@ import forms from '@tailwindcss/forms';
 
 /** @type {import('tailwindcss').Config} */
 export default {
-    // Aktifkan mode gelap secara eksplisit
+    // Tetap aktifkan dark mode class untuk latar belakang
     darkMode: 'class', 
     
     content: [
@@ -17,17 +17,17 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
-            // Definisi Skema Warna Neon Dark
+            // DEFINISI SKEMA WARNA GOLD/ORANGE
             colors: {
-                'dark-bg': '#121212', // Latar belakang utama yang sangat gelap
-                'dark-card': '#1e1e1e', // Latar belakang kartu/panel
-                'neon-green': '#39FF14', // Hijau Neon terang (untuk CTA/Highlight)
-                'neon-light': '#00F0FF', // Biru Neon/Cyan untuk aksen
-                'gray-700': '#333333', // Digunakan untuk border/divider
+                'dark-bg': '#101010',      // Latar belakang sangat gelap
+                'dark-card': '#1C1C1C',    // Latar belakang elemen
+                'accent-gold': '#FFC300',  // Warna Emas/Jingga utama
+                'accent-light': '#FFD700', // Warna Emas yang lebih terang
+                'gray-700': '#333333',
             },
-            // Efek Shadow Neon
+            // EFEK SHADOW GOLD
             boxShadow: {
-                'neon': '0 0 10px rgba(57, 255, 20, 0.7), 0 0 20px rgba(57, 255, 20, 0.5)',
+                'gold': '0 0 15px rgba(255, 195, 0, 0.6), 0 0 25px rgba(255, 195, 0, 0.3)',
             }
         },
     },

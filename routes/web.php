@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\FieldController;
 use App\Models\Booking;
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\CustomerBookingController;
 
@@ -29,45 +30,28 @@ Route::get('/about', [App\Http\Controllers\AboutController::class, 'index'])->na
 // ROUTE USER LOGIN
 // ------------------
 
-Route::middleware('auth')->group(function () {
-
+Route::middleware(['auth'])->group(function () {
     // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
 
-// ------------------
-// ROUTE PEMBAYARAN BOOKING
-// ------------------
+    Route::post('/booking/process', [BookingController::class, 'process'])->name('booking.process');
 
-Route::get('/booking/{booking}/payment', function (Booking $booking) {
+    Route::get('/booking/{booking}/payment', [PaymentController::class, 'show'])
+        ->middleware('verified')
+        ->name('payment.show');
 
-    // Hanya pemilik booking yang boleh akses
-    if (Auth::id() !== $booking->user_id) {
-        abort(403);
-    }
+    Route::post('/booking/{booking}/payment', [PaymentController::class, 'store'])
+        ->middleware('verified')
+        ->name('payment.store');
 
-    // Tampilkan view booking.payment
-    return view('booking.payment', compact('booking'));
-
-})->middleware(['auth'])->name('booking.payment');
-
-Route::get('/booking/{booking}/payment', [PaymentController::class, 'show'])
-    ->middleware(['auth', 'verified'])
-    ->name('payment.show');
-
-// Route untuk memproses bukti pembayaran (jika Anda menggunakan Controller terpisah)
-Route::post('/booking/{booking}/payment', [PaymentController::class, 'store'])
-    ->middleware(['auth', 'verified'])
-    ->name('payment.store');
-
-Route::middleware(['auth'])->group(function () {
-    // ... route profile, dashboard, dll
-    
     // ROUTE BARU UNTUK RIWAYAT BOOKING
     Route::get('/my-bookings', [CustomerBookingController::class, 'index'])->name('my-bookings.index');
 });
+
+// Route untuk halaman sukses
+Route::get('/booking/success', [BookingController::class, 'success'])->name('booking.success')->middleware('auth');
 
 // ------------------
 // ROUTE AUTH DEFAULT (Breeze / Jetstream / Fortify)

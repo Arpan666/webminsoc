@@ -1,100 +1,79 @@
 <x-app-layout>
-
-    {{-- Header Page --}}
     <x-slot name="header">
-        {{ __('Lokasi Lapangan') }}
+        {{-- Header Page --}}
+        {{ __('LOKASI LAPANGAN KAMI') }}
     </x-slot>
 
-    {{-- Content Area --}}
-    <div class="pt-16 pb-20 bg-dark-bg min-h-screen">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="container mx-auto px-4 py-12 bg-dark-bg max-w-7xl">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            
+            {{-- Bagian Kiri: Peta dan Visual --}}
+            <div class="lg:col-span-1 space-y-6">
+                <h2 class="text-3xl font-extrabold text-accent-gold mb-4 border-b border-accent-gold/50 pb-2">Peta Lapangan</h2>
 
-            <div class="text-center mb-12">
-                <h1 class="text-5xl font-extrabold text-white uppercase mb-4">
-                    Temukan <span class="text-neon-green">Arena</span> Terbaik
-                </h1>
-                <p class="text-gray-400 text-lg">
-                    Jelajahi lokasi lapangan mini soccer kami dan dapatkan petunjuk arah.
-                </p>
+                {{-- **MODIFIKASI: Peta Google Maps (Ganti Placeholder)** --}}
+                {{-- Container dipertahankan dengan tinggi h-96, rounded-xl, dan border gold --}}
+                <div class="relative w-full h-96 bg-gray-800 rounded-xl shadow-2xl overflow-hidden border border-accent-gold/30">
+                    
+                    {{-- Kode Iframe Google Maps Anda di sini --}}
+                    {{-- Atribut width dan height diubah ke 100% agar mengisi penuh div parent (h-96) --}}
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3973.561366080626!2d97.1335548!3d5.1740216!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3047830027eb11ad%3A0x4b7a7e15d6e2a44b!2sF9%20MINI%20SOCCER!5e0!3m2!1sid!2sid!4v1763996834030!5m2!1sid!2sid" 
+                        width="100%" 
+                        height="100%" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                    
+                </div>
+
+                <div class="bg-dark-card p-6 rounded-xl shadow-xl border border-gray-700">
+                    <p class="text-gray-300 leading-relaxed">
+                        Lapangan kami terletak di lokasi strategis yang mudah dijangkau dari berbagai penjuru kota. Cek petunjuk arah melalui Google Maps di atas (atau melalui tautan di bawah).
+                    </p>
+                </div>
             </div>
 
-            {{-- 1. Large Map Placeholder (Futuristic Grid Style) --}}
-            <div class="bg-dark-card rounded-xl border border-neon-green/30 shadow-2xl shadow-black/70 p-4 mb-12">
-                <div class="relative h-[60vh] overflow-hidden rounded-lg">
-                    {{-- Visual Map Placeholder (Futuristic Grid) --}}
-                    <div class="absolute inset-0 bg-dark-bg flex items-center justify-center opacity-90" 
-                         style="background-image: repeating-linear-gradient(0deg, #1C1C1C, #1C1C1C 1px, transparent 1px, transparent 10px), 
-                                repeating-linear-gradient(90deg, #1C1C1C, #1C1C1C 1px, transparent 1px, transparent 10px);">
-                        
-                        <div class="text-center">
-                            <svg class="w-16 h-16 text-neon-green mx-auto mb-3 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                {{-- Ikon: Location Target (Sporty) --}}
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                            </svg>
-                            <span class="text-white text-xl font-bold uppercase tracking-widest">
-                                MAP API INTEGRATION COMING SOON
-                            </span>
-                            <p class="text-gray-500 text-sm mt-2">Dapatkan akurasi lokasi terbaik di sini.</p>
-                        </div>
-                    </div>
-                    
-                    {{-- Floating CTA --}}
-                    <a href="#" class="absolute bottom-4 right-4 py-3 px-6 bg-neon-green text-dark-bg rounded-full font-bold uppercase text-sm tracking-wider 
-                                      hover:bg-neon-light transition duration-300 transform hover:scale-105 shadow-neon">
-                        Lihat Semua Lapangan
+            {{-- Bagian Kanan: Detail Akses dan Alamat --}}
+            <div class="lg:col-span-1 space-y-8">
+                <h2 class="text-3xl font-extrabold text-accent-gold mb-4 border-b border-accent-gold/50 pb-2">Detail Akses</h2>
+
+                {{-- Card Alamat Lengkap --}}
+                <div class="bg-dark-card p-6 rounded-xl shadow-xl border border-gray-700">
+                    <h3 class="text-xl font-bold text-white mb-2 flex items-center">
+                        <svg class="w-6 h-6 text-accent-gold mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0l-4.243-4.243m11.314 0a10 10 0 01-14.142 0m14.142 0H18.5a2 2 0 002-2V7a2 2 0 00-2-2h-12a2 2 0 00-2 2v7a2 2 0 002 2h2.828"></path></svg>
+                        Alamat Resmi
+                    </h3>
+                    <p class="text-gray-400">
+                        F9 MiniSoccer Jl. Merdeka Timur, Keude Cunda, Kec. Muara Dua, Kota Lhokseumawe, Aceh 24355.
+                    </p>
+                    <a href="https://maps.app.goo.gl/wqHNnEKTvmx34caW9" target="_blank" class="mt-4 inline-flex items-center text-accent-gold hover:text-accent-light transition duration-200">
+                        Lihat di Google Maps
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                     </a>
                 </div>
-            </div>
 
-            {{-- 2. Location List --}}
-            <h2 class="text-3xl font-extrabold text-white uppercase tracking-wider mb-8 border-b border-neon-green/30 pb-3">
-                Daftar Lapangan Utama
-            </h2>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                
-                {{-- Location Card 1: Main Arena --}}
-                <div class="bg-dark-card p-6 rounded-xl border border-neon-light/10 shadow-lg hover:shadow-neon transition duration-300">
-                    <div class="flex items-center mb-4">
-                         <svg class="w-8 h-8 text-neon-green mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.68 0 3.32-.267 4.87-0.78M3 12h18"></path>
-                        </svg>
-                        <h3 class="text-xl font-bold text-neon-light uppercase">F9 MINI SOCCER</h3>
-                    </div>
-                    <p class="text-gray-400 mb-4">Jl. Merdeka Timur, Keude Cunda, Kec. Muara Dua, Kota Lhokseumawe, Aceh 24355</p>
-                    
-                    <div class="flex justify-between items-center pt-4 border-t border-gray-700">
-                        <span class="text-sm text-gray-500">Buka Setiap Hari: 08:00 - 23:00</span>
-                        <a href="https://maps.app.goo.gl/Y1QLqmjREyTN7hxv6" target="_blank" 
-                           class="text-neon-green font-semibold hover:text-white transition duration-200 flex items-center">
-                            Arahkan ke Sini 
-                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                        </a>
-                    </div>
-                </div>
-
-                {{-- Location Card 2: Satellite Field --}}
-                <div class="bg-dark-card p-6 rounded-xl border border-neon-light/10 shadow-lg hover:shadow-neon transition duration-300">
-                    <div class="flex items-center mb-4">
-                        <svg class="w-8 h-8 text-neon-green mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
-                        </svg>
-                        <h3 class="text-xl font-bold text-neon-light uppercase">MINISOCCER SATELLITE BARAT</h3>
-                    </div>
-                    <p class="text-gray-400 mb-4">Komplek Stadion Satelit, Blok C-12, Tangerang Kota. (Kode Pos 15123)</p>
-                    
-                    <div class="flex justify-between items-center pt-4 border-t border-gray-700">
-                        <span class="text-sm text-gray-500">Buka Setiap Hari: 09:00 - 22:00</span>
-                        <a href="https://maps.app.goo.gl/pQkBrbXDC8C5ty7o7" target="_blank" 
-                           class="text-neon-green font-semibold hover:text-white transition duration-200 flex items-center">
-                            Arahkan ke Sini 
-                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                        </a>
-                    </div>
+                {{-- Card Petunjuk Transportasi --}}
+                <div class="bg-dark-card p-6 rounded-xl shadow-xl border border-gray-700">
+                    <h3 class="text-xl font-bold text-white mb-2 flex items-center">
+                        <svg class="w-6 h-6 text-accent-gold mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h-4v-2a2 2 0 00-2-2H9a2 2 0 00-2 2v2H3l2-7V8a2 2 0 012-2h10a2 2 0 012 2v5l2 7z"></path></svg>
+                        Petunjuk Arah
+                    </h3>
+                    <ul class="text-gray-400 list-disc list-inside space-y-2">
+                        <li>
+                            <span class="font-semibold text-white">Mobil Pribadi:</span> Akses melalui Jalan Lintas Sumatera. Lapangan berada di dekat jembatan/sungai. Tersedia parkir di belakang MR.DIY.
+                        </li>
+                        <li>
+                            <span class="font-semibold text-white">Transportasi Publik:</span> Naik angkutan umum (labi-labi) jurusan Cunda/Krueng Geukueh, turun di Komplek Harun Square. Lapangan berada persis di belakang komplek tersebut.
+                        </li>
+                        <li>
+                            <span class="font-semibold text-white">Ojek Online:</span> Cari "F9 MINI SOCCER" atau gunakan patokan "Wisma Sartika" atau "Hotel Diana" (terlihat di peta).
+                        </li>
+                    </ul>
                 </div>
             </div>
-            
         </div>
     </div>
 </x-app-layout>

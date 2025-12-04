@@ -17,7 +17,7 @@ class Booking extends Model
         'total_price',
         'payment_method',
         'status',
-        'admin_notes',     // <-- WAJIB
+        'admin_notes',     
         'payment_proof_path',
     ];
 

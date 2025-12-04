@@ -116,7 +116,7 @@
                 <div>
                     <h2 class="text-xl font-bold text-gray-800 mb-3">Upload Bukti Transfer</h2>
                     <div class="p-5 bg-gray-100 rounded-lg border">
-                        @livewire('payment-uploader', ['booking' => $booking])
+                        @livewire('payment-uploader', ['bookingId' => $booking->id])
                     </div>
                 </div>
 

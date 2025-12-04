@@ -19,8 +19,6 @@ class FieldResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-// app/Filament/Resources/FieldResource.php (Hanya bagian form dan table)
-
     public static function form(Form $form): Form
     {
         return $form

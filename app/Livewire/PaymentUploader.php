@@ -2,64 +2,51 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
 use App\Models\Booking;
-use Livewire\WithFileUploads; // Import trait untuk upload file
-use Illuminate\Support\Facades\Storage;
+use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class PaymentUploader extends Component
 {
     use WithFileUploads;
 
-    public Booking $booking; // Properti untuk menerima objek Booking
-    public $paymentProof;    // Properti untuk menampung file upload
-    public $uploadSuccess = false;
+    public $booking;
+    public $paymentProof; // Ganti nama agar sesuai dengan View (sebelumnya proof_image)
+    public $uploadSuccess = false; // ✅ Tambahkan ini agar error hilang
 
-    // Aturan Validasi untuk file upload
+    // Validasi
     protected $rules = [
-        'paymentProof' => 'required|image|max:1024', // max 1MB
-    ];
-    
-    // Custom messages untuk validasi
-    protected $messages = [
-        'paymentProof.required' => 'Bukti pembayaran wajib diunggah.',
-        'paymentProof.image' => 'File harus berupa gambar (jpeg, png, bmp, gif, svg, atau webp).',
-        'paymentProof.max' => 'Ukuran file bukti pembayaran tidak boleh melebihi 1MB.',
+        'paymentProof' => 'required|image|max:2048', // Maksimal 2MB
     ];
 
-    public function mount(Booking $booking)
+    public function mount($bookingId)
     {
-        $this->booking = $booking;
-        // Jika booking sudah memiliki bukti bayar, asumsikan upload berhasil
-        if ($booking->payment_proof_path) {
-            $this->uploadSuccess = true;
-        }
+        // Kita terima ID saja agar lebih aman
+        $this->booking = Booking::findOrFail($bookingId);
     }
 
-    public function submitPayment()
+    public function save()
     {
-        // 1. Validasi file upload
         $this->validate();
 
-        // 2. Simpan file
-        try {
-            // Simpan file ke storage 'public' di folder 'payment-proofs'
-            $path = $this->paymentProof->store('payment-proofs', 'public');
-            
-            // 3. Update Model Booking
-            $this->booking->update([
-                'payment_proof_path' => $path,
-                'status' => 'waiting_confirmation', // Update status ke menunggu konfirmasi admin
-            ]);
-            
-            $this->uploadSuccess = true;
-            session()->flash('message', 'Bukti pembayaran berhasil diunggah! Mohon tunggu konfirmasi dari Admin.');
+        // 1. Simpan file
+        $path = $this->paymentProof->store('payment_proofs', 'public');
 
-        } catch (\Exception $e) {
-            // Tangani kegagalan saat menyimpan file
-            session()->flash('error', 'Gagal mengunggah bukti pembayaran. Silahkan coba lagi.');
-            // Opsional: Log $e->getMessage() untuk debugging
-        }
+        // 2. Update database
+        // PERHATIAN: Pastikan nama kolom di database sesuai (biasanya payment_proof_path)
+        $this->booking->update([
+            'payment_proof_path' => $path, // ✅ Sesuaikan dengan nama kolom di database kamu
+            'status' => 'pending_verification', 
+        ]);
+
+        // 3. Ubah status sukses agar muncul notifikasi di layar
+        $this->uploadSuccess = true;
+        
+        // Reset input file
+        $this->paymentProof = null;
+
+        // Opsional: Redirect setelah 2 detik atau biarkan user melihat pesan sukses dulu
+        session()->flash('message', 'Bukti berhasil diunggah!');
     }
 
     public function render()

@@ -2,7 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Definisi mode gelap dasar */
 .dark-mode {
-    background-color: #121212;
+    background-color: #101010;
     color: #ffffff;
 }
