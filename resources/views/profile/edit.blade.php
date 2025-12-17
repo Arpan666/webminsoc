@@ -3,166 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil Pengguna</title>
+    <title>User Profile | F9 Minisoccer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'dark-bg': '#101010',
+                        'dark-card': '#1C1C1C',
+                        'accent-gold': '#FFC300',
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        :root {
-            --color-dark-bg: #101010;
-            --color-dark-card: #1C1C1C;
-            --color-accent-gold: #FFC300;
-            --color-accent-light: #FFD700;
-            --color-gray-700: #333333;
+        body { font-family: 'Inter', sans-serif; }
+        .shadow-gold-premium {
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 195, 0, 0.05);
         }
-
-        /* Apply the custom font and main BG color globally */
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--color-dark-bg); /* Menggunakan variabel CSS */
-        }
-        
-        /* Custom Gold Shadow Class (Menggunakan definisi statis) */
-        .shadow-gold-custom {
-            box-shadow: 0 0 15px rgba(255, 195, 0, 0.6), 0 0 25px rgba(255, 195, 0, 0.3);
-        }
-        
-        /* Custom Utility Classes untuk mengganti kelas Tailwind custom yang dihapus */
-        .bg-card { background-color: var(--color-dark-card); }
-        .text-gold { color: var(--color-accent-gold); }
-        .text-light-gold { color: var(--color-accent-light); }
-        .bg-gold { background-color: var(--color-accent-gold); }
-        .border-gold-50 { border-color: rgba(255, 195, 0, 0.5); }
-        .hover-border-gold:hover { border-color: var(--color-accent-gold); }
-        .bg-gray-input { background-color: rgba(51, 51, 51, 0.5); }
-        .border-gray-input { border-color: var(--color-gray-700); }
-        .focus-ring-gold:focus { 
-            --tw-ring-color: var(--color-accent-gold);
-            outline: 2px solid var(--color-accent-gold);
-            outline-offset: 2px;
-        }
-        .focus-border-gold-80:focus { border-color: rgba(255, 195, 0, 0.8); }
-        /* Kelas untuk Focus Ring Offset agar kontras dengan card */
-        .ring-offset-card { --tw-ring-offset-color: var(--color-dark-card); }
-
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #101010; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #FFC300; }
     </style>
 </head>
-<body class="min-h-screen text-gray-200">
+<body class="bg-dark-bg min-h-screen text-gray-200 antialiased">
 
-    <header class="bg-card border-b border-gray-700/50 shadow-lg">
-        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-            
-            <h2 class="font-bold text-2xl leading-tight text-gold tracking-wider">
-                Profil Pengguna
+    {{-- Header / Navbar Style --}}
+    <header class="fixed top-0 w-full z-50 bg-dark-bg/80 backdrop-blur-xl border-b border-white/5">
+        <div class="max-w-7xl mx-auto py-5 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            <h2 class="font-black text-xl uppercase tracking-[0.3em] text-accent-gold">
+                Profil <span class="text-white">User</span>
             </h2>
 
             <button onclick="history.back()" 
-                    class="inline-flex items-center px-4 py-2 bg-gray-700/50 text-gray-200 font-semibold text-sm uppercase rounded-xl hover:bg-gray-600 focus:outline-none focus:ring-2 focus-ring-gold ring-offset-2 ring-offset-card transition ease-in-out duration-150">
-                <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    class="group flex items-center gap-2 px-4 py-2 bg-white/5 text-gray-400 font-black text-[10px] uppercase tracking-widest rounded-xl border border-white/5 hover:border-accent-gold/50 hover:text-accent-gold transition-all duration-300">
+                <svg class="h-4 w-4 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
-                Batal / Kembali
+                Kembali
             </button>
         </div>
     </header>
 
-    <div class="py-12">
-        <div class="max-w-4xl lg:max-w-6xl mx-auto sm:px-6 lg:px-8 space-y-6">
+    <div class="pt-32 pb-20">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
 
-            <div class="p-4 sm:p-8 bg-card shadow-gold-custom sm:rounded-xl border border-gold-50 transition duration-300 hover-border-gold">
-                <div class="max-w-full">
-                    <section>
-                        <header>
-                            <h2 class="text-xl font-semibold text-light-gold">Informasi Profil</h2>
-                            <p class="mt-1 text-sm text-gray-400">
-                                Perbarui nama dan alamat email akun Anda.
-                            </p>
-                        </header>
+            {{-- SECTION 1: INFORMASI PROFIL --}}
+            <div class="bg-dark-card shadow-gold-premium rounded-[2.5rem] p-8 md:p-10 border border-white/5 relative overflow-hidden group">
+                <div class="absolute -right-20 -top-20 w-64 h-64 bg-accent-gold/5 rounded-full blur-[100px] group-hover:bg-accent-gold/10 transition-colors duration-500"></div>
+                
+                <div class="relative z-10">
+                    <header class="mb-8 flex items-center gap-4">
+                        <div class="p-3 bg-accent-gold/10 rounded-2xl">
+                            <svg class="w-6 h-6 text-accent-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-black uppercase tracking-widest text-white">Informasi Profil</h2>
+                            <p class="text-xs text-gray-500 mt-1 uppercase tracking-tighter">Perbarui identitas akun Anda secara berkala.</p>
+                        </div>
+                    </header>
 
-                        <form class="mt-6 space-y-6">
-                            <div>
-                                <label for="name" class="block font-medium text-sm text-gray-300 mb-1">Nama</label>
-                                <input id="name" type="text" value="Nama Pengguna" class="mt-1 block w-full bg-gray-input border-gray-input rounded-lg text-gray-200 focus-ring-gold focus-border-gold-80" required>
+                    <form class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 ml-1">Nama Lengkap</label>
+                                <input type="text" value="Nama Pengguna" class="w-full bg-dark-bg border border-white/10 rounded-2xl px-5 py-4 text-sm text-white focus:outline-none focus:border-accent-gold transition-all duration-300 shadow-inner">
                             </div>
-                            <div>
-                                <label for="email" class="block font-medium text-sm text-gray-300 mb-1">Email</label>
-                                <input id="email" type="email" value="user@example.com" class="mt-1 block w-full bg-gray-input border-gray-input rounded-lg text-gray-200 focus-ring-gold focus-border-gold-80" required>
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 ml-1">Alamat Email</label>
+                                <input type="email" value="user@example.com" class="w-full bg-dark-bg border border-white/10 rounded-2xl px-5 py-4 text-sm text-white focus:outline-none focus:border-accent-gold transition-all duration-300 shadow-inner">
                             </div>
+                        </div>
 
-                            <div class="flex items-center gap-4">
-                                <button type="submit" class="inline-flex items-center px-4 py-2 bg-gold text-dark-bg font-bold text-sm uppercase tracking-wider rounded-xl shadow-lg hover:bg-accent-light focus:outline-none focus:ring-2 focus-ring-gold ring-offset-2 ring-offset-card transition ease-in-out duration-150">
-                                    Simpan Perubahan
-                                </button>
-                                <p class="text-sm text-gray-500">Tersimpan.</p>
-                            </div>
-                        </form>
-                    </section>
+                        <div class="flex items-center gap-4 pt-4">
+                            <button type="submit" class="px-8 py-4 bg-accent-gold text-dark-bg font-black uppercase text-[10px] tracking-widest rounded-2xl shadow-[0_10px_30px_rgba(255,195,0,0.2)] hover:shadow-accent-gold/40 hover:-translate-y-1 transition-all duration-300">
+                                Simpan Perubahan
+                            </button>
+                            <span class="text-[10px] font-bold text-green-500 uppercase tracking-widest animate-pulse">✓ Tersimpan</span>
+                        </div>
+                    </form>
                 </div>
             </div>
 
-            <div class="p-4 sm:p-8 bg-card shadow-gold-custom sm:rounded-xl border border-gold-50 transition duration-300 hover-border-gold">
-                <div class="max-w-full">
-                    <section>
-                        <header>
-                            <h2 class="text-xl font-semibold text-light-gold">Perbarui Kata Sandi</h2>
-                            <p class="mt-1 text-sm text-gray-400">
-                                Pastikan akun Anda menggunakan kata sandi yang panjang dan acak agar tetap aman.
-                            </p>
-                        </header>
+            {{-- SECTION 2: UPDATE PASSWORD --}}
+            <div class="bg-dark-card shadow-gold-premium rounded-[2.5rem] p-8 md:p-10 border border-white/5 relative overflow-hidden group">
+                <div class="relative z-10">
+                    <header class="mb-8 flex items-center gap-4">
+                        <div class="p-3 bg-accent-gold/10 rounded-2xl">
+                            <svg class="w-6 h-6 text-accent-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-black uppercase tracking-widest text-white">Keamanan Akun</h2>
+                            <p class="text-xs text-gray-500 mt-1 uppercase tracking-tighter">Gunakan kombinasi password yang kuat dan unik.</p>
+                        </div>
+                    </header>
 
-                        <form class="mt-6 space-y-6">
-                            <div>
-                                <label for="current_password" class="block font-medium text-sm text-gray-300 mb-1">Kata Sandi Saat Ini</label>
-                                <input id="current_password" type="password" class="mt-1 block w-full bg-gray-input border-gray-input rounded-lg text-gray-200 focus-ring-gold focus-border-gold-80" required>
+                    <form class="space-y-6">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 ml-1">Kata Sandi Saat Ini</label>
+                            <input type="password" class="w-full bg-dark-bg border border-white/10 rounded-2xl px-5 py-4 text-sm text-white focus:outline-none focus:border-accent-gold transition-all">
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 ml-1">Kata Sandi Baru</label>
+                                <input type="password" class="w-full bg-dark-bg border border-white/10 rounded-2xl px-5 py-4 text-sm text-white focus:outline-none focus:border-accent-gold transition-all">
                             </div>
-                            <div>
-                                <label for="password" class="block font-medium text-sm text-gray-300 mb-1">Kata Sandi Baru</label>
-                                <input id="password" type="password" class="mt-1 block w-full bg-gray-input border-gray-input rounded-lg text-gray-200 focus-ring-gold focus-border-gold-80" required>
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 ml-1">Konfirmasi Sandi</label>
+                                <input type="password" class="w-full bg-dark-bg border border-white/10 rounded-2xl px-5 py-4 text-sm text-white focus:outline-none focus:border-accent-gold transition-all">
                             </div>
-                            <div>
-                                <label for="password_confirmation" class="block font-medium text-sm text-gray-300 mb-1">Konfirmasi Kata Sandi</label>
-                                <input id="password_confirmation" type="password" class="mt-1 block w-full bg-gray-input border-gray-input rounded-lg text-gray-200 focus-ring-gold focus-border-gold-80" required>
-                            </div>
+                        </div>
 
-                            <div class="flex items-center gap-4">
-                                <button type="submit" class="inline-flex items-center px-4 py-2 bg-gold text-dark-bg font-bold text-sm uppercase tracking-wider rounded-xl shadow-lg hover:bg-accent-light focus:outline-none focus:ring-2 focus-ring-gold ring-offset-2 ring-offset-card transition ease-in-out duration-150">
-                                    Simpan Kata Sandi
-                                </button>
-                            </div>
-                        </form>
-                    </section>
+                        <div class="pt-4">
+                            <button type="submit" class="px-8 py-4 bg-white/5 text-white border border-white/10 font-black uppercase text-[10px] tracking-widest rounded-2xl hover:bg-white/10 hover:border-accent-gold transition-all duration-300">
+                                Perbarui Kata Sandi
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
-            
-            <div class="p-4 sm:p-8 bg-card shadow-gold-custom sm:rounded-xl border border-red-600/50">
-                <div class="max-w-full">
-                    <section>
-                        <header>
-                            <h2 class="text-xl font-semibold text-red-500">Hapus Akun</h2>
-                            <p class="mt-1 text-sm text-gray-400">
-                                Setelah akun Anda dihapus, semua sumber daya dan datanya akan dihapus secara permanen. Sebelum menghapus akun Anda, harap unduh data atau informasi apa pun yang ingin Anda simpan.
-                            </p>
-                        </header>
 
-                        <button onclick="document.getElementById('delete-modal').classList.remove('hidden')" class="mt-6 inline-flex items-center px-4 py-2 bg-red-600 text-white font-bold text-sm uppercase tracking-wider rounded-xl shadow-lg hover:bg-red-700 transition ease-in-out duration-150">
-                            Hapus Akun
-                        </button>
-                    </section>
+            {{-- SECTION 3: DELETE ACCOUNT --}}
+            <div class="bg-dark-card rounded-[2.5rem] p-8 md:p-10 border border-red-500/20 relative overflow-hidden group">
+                <div class="absolute inset-0 bg-red-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
+                <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div>
+                        <h2 class="text-lg font-black uppercase tracking-widest text-red-500">Hapus Akun</h2>
+                        <p class="text-xs text-gray-500 mt-2 max-w-xl leading-relaxed">
+                            Setelah akun dihapus, semua riwayat booking dan data Anda akan hilang secara permanen. Tindakan ini tidak dapat dibatalkan.
+                        </p>
+                    </div>
+
+                    <button onclick="document.getElementById('delete-modal').classList.remove('hidden')" 
+                            class="px-8 py-4 bg-red-600/10 text-red-500 border border-red-600/20 font-black uppercase text-[10px] tracking-widest rounded-2xl hover:bg-red-600 hover:text-white transition-all duration-300 whitespace-nowrap">
+                        Hapus Akun Saya
+                    </button>
                 </div>
             </div>
-            
-            <div id="delete-modal" class="hidden fixed inset-0 bg-dark-bg/80 backdrop-blur-sm flex items-center justify-center p-4 z-50" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-                <div class="bg-card rounded-xl p-6 w-full max-w-sm shadow-gold-custom border border-red-600/70">
-                    <h3 id="modal-title" class="text-lg font-bold text-red-500">Konfirmasi Penghapusan Akun</h3>
-                    <p class="mt-2 text-sm text-gray-400">
-                        Apakah Anda yakin ingin menghapus akun Anda? Semua data akan hilang secara permanen.
+
+            {{-- MODAL DELETE --}}
+            <div id="delete-modal" class="hidden fixed inset-0 bg-dark-bg/95 backdrop-blur-md flex items-center justify-center p-4 z-[100]">
+                <div class="bg-dark-card rounded-[3rem] p-10 w-full max-w-md shadow-2xl border border-red-600/30 text-center">
+                    <div class="w-20 h-20 bg-red-600/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-black text-white uppercase tracking-widest">Konfirmasi Hapus</h3>
+                    <p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                        Bos, Anda yakin mau pergi? Semua data akan dihapus secara permanen dari server kami.
                     </p>
-                    <div class="mt-6 flex justify-end gap-3">
-                        <button onclick="document.getElementById('delete-modal').classList.add('hidden')" class="px-4 py-2 text-sm font-medium rounded-lg text-gray-200 hover:bg-gray-700/50 transition">
-                            Batal
+                    <div class="mt-10 flex flex-col gap-3">
+                        <button onclick="alert('Proses Penghapusan...')" class="w-full py-4 bg-red-600 text-white font-black uppercase text-[10px] tracking-widest rounded-2xl hover:bg-red-700 transition shadow-lg shadow-red-600/20">
+                            Ya, Hapus Sekarang
                         </button>
-                        <button onclick="alert('Akun telah disimulasikan untuk dihapus. (Dalam aplikasi nyata, ini akan menghapus data)')" class="px-4 py-2 text-sm font-medium rounded-lg bg-red-600 text-white hover:bg-red-700 transition">
-                            Saya Yakin, Hapus Akun
+                        <button onclick="document.getElementById('delete-modal').classList.add('hidden')" class="w-full py-4 bg-white/5 text-gray-400 font-black uppercase text-[10px] tracking-widest rounded-2xl hover:text-white transition">
+                            Batal
                         </button>
                     </div>
                 </div>

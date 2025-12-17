@@ -21,21 +21,25 @@ class CancelBookingButton extends Component
 
     public function cancel()
     {
-        // Hanya izinkan pembatalan jika statusnya masih menunggu verifikasi atau konfirmasi
-        if ($this->booking->status === 'pending_verification' || $this->booking->status === 'waiting_confirmation') {
+        // 1. Cek apakah statusnya memang bisa dibatalkan
+        if (in_array($this->booking->status, ['pending_verification', 'waiting_confirmation'])) {
             
             $this->booking->update([
                 'status' => 'cancelled', 
                 'admin_notes' => 'Dibatalkan oleh customer.',
             ]);
 
-            session()->flash('success', 'Pemesanan berhasil dibatalkan.');
-        } else {
-            session()->flash('error', 'Pemesanan tidak dapat dibatalkan karena statusnya sudah ' . ucfirst(str_replace('_', ' ', $this->booking->status)) . '.');
-        }
+            // 2. Kirim sinyal (Dispatch) ke Browser untuk memicu SweetAlert2
+            $this->dispatch('swal:success', [
+                'message' => 'Pesanan Anda berhasil dibatalkan, Bos!'
+            ]);
 
-        // Redirect kembali ke halaman riwayat booking
-        return redirect()->route('my-bookings.index');
+        } else {
+            // Jika gagal (status sudah berubah duluan), kirim sinyal error
+            $this->dispatch('swal:error', [
+                'message' => 'Gagal! Status pesanan sudah ' . ucfirst(str_replace('_', ' ', $this->booking->status))
+            ]);
+        }
     }
 
     public function render()

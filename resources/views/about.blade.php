@@ -1,77 +1,95 @@
 <x-app-layout>
-
     {{-- Header Page --}}
     <x-slot name="header">
-        {{ __('Tentang Kami') }}
+        {{-- Spacer pt-20 untuk mencegah konten tertabrak Navbar Fixed --}}
+        <div class="pt-20">
+            <h2 class="font-black text-xl text-accent-gold uppercase tracking-[0.4em] text-center drop-shadow-lg">
+                {{ __('Tentang Kami') }}
+            </h2>
+        </div>
     </x-slot>
 
     {{-- Content Area --}}
-    {{-- bg-dark-bg tetap, sesuai tema baru --}}
-    <div class="pt-16 pb-20 bg-dark-bg min-h-screen">
+    <div class="bg-dark-bg min-h-screen py-16">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            <div class="text-center mb-12">
-                <h1 class="text-5xl font-extrabold text-white uppercase mb-4">
-                    {{-- Ganti text-neon-green menjadi text-accent-gold --}}
+            {{-- Judul Filosofi --}}
+            <div class="text-center mb-16">
+                <div class="inline-block px-4 py-1 rounded-full bg-accent-gold/10 border border-accent-gold/20 mb-4">
+                    <span class="text-accent-gold text-[10px] font-bold uppercase tracking-[0.3em]">Our Story</span>
+                </div>
+                <h1 class="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter mb-4">
                     Filosofi <span class="text-accent-gold">MINISOCCER</span>
                 </h1>
-                <p class="text-gray-400 text-lg">
-                    Ruang bermain modern untuk mereka yang serius menikmati futsal.
+                <div class="h-1.5 w-24 bg-accent-gold mx-auto rounded-full mb-6"></div>
+                <p class="text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed">
+                    Ruang bermain modern untuk mereka yang serius menikmati kualitas permainan MiniSoccer dan persaudaraan.
                 </p>
             </div>
 
-            <div class="space-y-12">
+            <div class="space-y-10">
                 
                 {{-- Visi & Misi Card --}}
-                {{-- Ganti border-neon-green/10 menjadi border-accent-gold/10 --}}
-                <div class="bg-dark-card p-8 rounded-xl border border-accent-gold/10 shadow-2xl shadow-black/70">
-                    {{-- Ganti text-neon-light menjadi text-accent-light, border-neon-green/30 menjadi border-accent-gold/30 --}}
-                    <h2 class="text-3xl font-bold text-accent-light mb-6 border-b border-accent-gold/30 pb-3 flex items-center">
-                        <svg class="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            {{-- Ikon: Vision/Target --}}
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l-2 1m2-1h10l1 3m-1 0v8a1 1 0 01-1 1H8m6-4a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                        </svg>
-                        Visi Kami
-                    </h2>
-                    <p class="text-gray-300 leading-relaxed text-lg">
-                        Menjadi lapangan MiniSoccer yang menghadirkan pengalaman bermain terbaik, lebih rapi, lebih nyaman, dan lebih terstandar. Bukan sekadar tempat bermain, tetapi lingkungan yang mendukung performa setiap pemain.
+                <div class="bg-dark-card group p-10 rounded-[2rem] border border-white/10 shadow-2xl transition-all duration-500 hover:border-accent-gold/30">
+                    <div class="flex items-center space-x-4 mb-8">
+                        <div class="p-3 bg-accent-gold/10 rounded-2xl group-hover:bg-accent-gold transition-colors duration-500">
+                            <svg class="w-8 h-8 text-accent-gold group-hover:text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l-2 1m2-1h10l1 3m-1 0v8a1 1 0 01-1 1H8m6-4a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                            </svg>
+                        </div>
+                        <h2 class="text-3xl font-black text-white uppercase tracking-tighter">Visi <span class="text-accent-gold">Kami</span></h2>
+                    </div>
+                    
+                    <p class="text-gray-300 leading-relaxed text-lg mb-8 italic border-l-4 border-accent-gold/30 pl-6">
+                        "Menghadirkan pengalaman bermain terbaik dengan standar internasional—bukan sekadar lapangan, tapi rumah bagi para atlet."
                     </p>
                     
-                
-                    <h3 class="text-xl font-semibold text-accent-gold mt-6 mb-3">Misi Utama</h3>
-                    <ul class="list-disc list-inside text-gray-400 space-y-2 ml-4">
-                        <li>Menyediakan lapangan dengan kualitas premium dan perawatan konsisten.</li>
-                        <li>Memberikan sistem pemesanan langsung yang praktis, cepat, dan transparan.</li>
-                        <li>Membangun atmosfer pertandingan yang sportif, aman, dan menyenangkan untuk semua kalangan.</li>
-                    </ul>
+                    <div class="space-y-6">
+                        <h3 class="text-xs font-black text-accent-gold uppercase tracking-[0.4em] mb-4">Misi Utama Kami</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
+                            <div class="flex items-start p-4 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-all">
+                                <div class="w-6 h-6 rounded-full bg-accent-gold/20 flex items-center justify-center text-accent-gold text-xs font-bold mr-4 shrink-0">1</div>
+                                <p class="text-gray-400 text-sm">Menyediakan rumput sintetis kelas premium dengan perawatan harian yang konsisten.</p>
+                            </div>
+                            <div class="flex items-start p-4 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-all">
+                                <div class="w-6 h-6 rounded-full bg-accent-gold/20 flex items-center justify-center text-accent-gold text-xs font-bold mr-4 shrink-0">2</div>
+                                <p class="text-gray-400 text-sm">Sistem booking real-time yang transparan, tanpa drama, dan tanpa ribet.</p>
+                            </div>
+                            <div class="flex items-start p-4 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-all">
+                                <div class="w-6 h-6 rounded-full bg-accent-gold/20 flex items-center justify-center text-accent-gold text-xs font-bold mr-4 shrink-0">3</div>
+                                <p class="text-gray-400 text-sm">Membangun komunitas sepakbola yang inklusif, aman, dan kompetitif.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 {{-- Tim Card --}}
-                {{-- Ganti border-neon-green/10 menjadi border-accent-gold/10 --}}
-                <div class="bg-dark-card p-8 rounded-xl border border-accent-gold/10 shadow-2xl shadow-black/70">
-                    {{-- Ganti text-neon-light menjadi text-accent-light, border-neon-green/30 menjadi border-accent-gold/30 --}}
-                    <h2 class="text-3xl font-bold text-accent-light mb-6 border-b border-accent-gold/30 pb-3 flex items-center">
-                        <svg class="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            {{-- Ikon: Team/People --}}
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h-5v-1a4 4 0 00-4-4H4a4 4 0 00-4 4v1h5m3-6a4 4 0 100-8 4 4 0 000 8zm-8 2h8m-8-2v2m-2-2h-2m2-2a4 4 0 10-8 0 4 4 0 008 0z"></path>
-                        </svg>
-                        Tim di Balik Layar
-                    </h2>
-                    <p class="text-gray-300 leading-relaxed">
-                       Kami adalah tim yang percaya bahwa olahraga harus dinikmati dengan fasilitas yang layak. Dari pencahayaan, permukaan lapangan, hingga layanan pelanggan. semua kami desain agar pemain merasa nyaman dan fokus pada permainan.
+                <div class="bg-dark-card p-10 rounded-[2rem] border border-white/10 shadow-2xl relative overflow-hidden">
+                    {{-- Efek cahaya latar (Glow) --}}
+                    <div class="absolute -right-20 -top-20 w-64 h-64 bg-accent-gold/5 rounded-full blur-[100px]"></div>
                     
-                    <div class="mt-6 text-center">
-                        <a href="{{ route('contact-us') ?? '#' }}" 
-                            {{-- Ganti bg-neon-green menjadi bg-accent-gold, hover:bg-neon-light menjadi hover:bg-accent-light, shadow-neon menjadi shadow-gold --}}
-                           class="inline-block py-3 px-6 bg-accent-gold text-dark-bg rounded-full font-bold uppercase text-md tracking-wider 
-                                  hover:bg-accent-light transition duration-300 transform hover:scale-[1.03] shadow-gold">
-                            Bergabung atau Hubungi Tim Kami
-                        </a>
+                    <div class="relative z-10 text-center">
+                        <h2 class="text-3xl font-black text-white uppercase tracking-tighter mb-6">Tim di Balik <span class="text-accent-gold">Layar</span></h2>
+                        <p class="text-gray-400 leading-relaxed max-w-2xl mx-auto mb-10">
+                            Kami adalah pecinta olahraga yang percaya bahwa kualitas fasilitas menentukan kualitas permainan. Setiap detail, mulai dari lampu stadium hingga aliran udara, kami pantau demi kenyamanan Anda.
+                        </p>
+                        
+                        <div class="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                            <a href="{{ route('contact-us') ?? '#' }}" 
+                               class="w-full sm:w-auto px-8 py-4 bg-accent-gold text-dark-bg rounded-2xl font-black uppercase text-[11px] tracking-[0.2em] hover:scale-105 hover:shadow-[0_10px_30px_rgba(212,175,55,0.3)] transition-all duration-300">
+                                Hubungi Tim Kami
+                            </a>
+                            <div class="flex -space-x-3">
+                                <div class="w-10 h-10 rounded-full border-2 border-dark-card bg-gray-700"></div>
+                                <div class="w-10 h-10 rounded-full border-2 border-dark-card bg-gray-600"></div>
+                                <div class="w-10 h-10 rounded-full border-2 border-dark-card bg-gray-500"></div>
+                                <div class="w-10 h-10 rounded-full border-2 border-dark-card bg-accent-gold flex items-center justify-center text-[10px] font-bold text-dark-bg">+12</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
             </div>
-            
         </div>
     </div>
 </x-app-layout>

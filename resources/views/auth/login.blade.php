@@ -1,89 +1,95 @@
 <x-guest-layout>
-    
-    {{-- CATATAN: Semua div luar seperti min-h-screen, Logo, dan card container telah dihapus.
-         Konten ini akan dimasukkan langsung ke dalam card container di guest.blade.php. --}}
-
-    <div class="w-full h-full 
-                transform transition-all duration-500 hover:shadow-accent-gold/40">
+    <div class="w-full h-full transform transition-all duration-500">
         
-        <div class="text-center mb-10">
-            <h1 class="text-5xl font-extrabold text-accent-gold tracking-widest uppercase mb-1 drop-shadow-lg drop-shadow-accent-gold/50">
+        {{-- Header Section --}}
+        <div class="text-center mb-10 relative">
+            {{-- Efek Cahaya Belakang Judul --}}
+            <div class="absolute inset-0 bg-accent-gold/10 blur-[50px] rounded-full -z-10 h-20 w-40 mx-auto"></div>
+            
+            <h1 class="text-5xl font-black text-accent-gold tracking-[0.2em] uppercase mb-2 drop-shadow-[0_5px_15px_rgba(255,195,0,0.4)]">
                 MASUK
             </h1>
-            <p class="text-gray-400 text-sm">Akses cepat untuk memesan slot lapangan Anda.</p>
+            <p class="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em]">
+                F9 Minisoccer <span class="text-accent-gold">Elite Access</span>
+            </p>
         </div>
 
-        <x-auth-session-status class="mb-4 text-accent-gold" :status="session('status')" />
+        <x-auth-session-status class="mb-6 text-center text-sm font-bold text-accent-gold animate-pulse" :status="session('status')" />
 
-        <form method="POST" action="{{ route('login') }}">
+        <form method="POST" action="{{ route('login') }}" class="space-y-6">
             @csrf
 
-            <!-- Email Address - Gaya Modern: Bottom Border Only -->
-            <div>
-                <x-input-label for="email" :value="__('Email')" class="text-gray-300" />
-                <x-text-input id="email" 
-                              class="block mt-1 w-full bg-dark-bg border-0 border-b border-gray-600 text-white rounded-none py-3
-                                     focus:border-accent-gold focus:ring-0 focus:border-b-2 transition duration-300" 
-                              type="email" 
-                              name="email" 
-                              :value="old('email')" 
-                              required 
-                              autofocus 
-                              autocomplete="username" />
-                <x-input-error :messages="$errors->get('email')" class="mt-2" />
+            <div class="group">
+                <label for="email" class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 group-focus-within:text-accent-gold transition-colors duration-300 ml-1">
+                    {{ __('Email Address') }}
+                </label>
+                <div class="relative">
+                    <input id="email" 
+                           type="email" 
+                           name="email" 
+                           :value="old('email')" 
+                           required 
+                           autofocus 
+                           autocomplete="username"
+                           class="block mt-1 w-full bg-dark-bg/50 border-0 border-b-2 border-white/10 text-white rounded-none py-4 px-1
+                                  focus:border-accent-gold focus:ring-0 transition-all duration-500 placeholder-gray-700 shadow-inner"
+                           placeholder="yourname@email.com" />
+                </div>
+                <x-input-error :messages="$errors->get('email')" class="mt-2 text-[10px] font-bold uppercase tracking-widest text-red-500" />
             </div>
 
-            <!-- Password - Gaya Modern: Bottom Border Only -->
-            <div class="mt-4">
-                <x-input-label for="password" :value="__('Password')" class="text-gray-300" />
-
-                <x-text-input id="password" 
-                              class="block mt-1 w-full bg-dark-bg border-0 border-b border-gray-600 text-white rounded-none py-3
-                                     focus:border-accent-gold focus:ring-0 focus:border-b-2 transition duration-300"
-                              type="password"
-                              name="password"
-                              required 
-                              autocomplete="current-password" />
-                <x-input-error :messages="$errors->get('password')" class="mt-2" />
+            <div class="group">
+                <label for="password" class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 group-focus-within:text-accent-gold transition-colors duration-300 ml-1">
+                    {{ __('Password') }}
+                </label>
+                <div class="relative">
+                    <input id="password" 
+                           type="password"
+                           name="password"
+                           required 
+                           autocomplete="current-password"
+                           class="block mt-1 w-full bg-dark-bg/50 border-0 border-b-2 border-white/10 text-white rounded-none py-4 px-1
+                                  focus:border-accent-gold focus:ring-0 transition-all duration-500 placeholder-gray-700 shadow-inner"
+                           placeholder="••••••••" />
+                </div>
+                <x-input-error :messages="$errors->get('password')" class="mt-2 text-[10px] font-bold uppercase tracking-widest text-red-500" />
             </div>
 
-            <!-- Remember Me -->
-            <div class="block mt-4">
-                <label for="remember_me" class="inline-flex items-center group">
+            <div class="flex items-center justify-between text-[10px] font-black uppercase tracking-widest">
+                <label for="remember_me" class="inline-flex items-center group cursor-pointer">
                     <input id="remember_me" 
                            type="checkbox" 
-                           class="rounded-sm border-gray-700 text-accent-gold bg-dark-bg shadow-sm 
-                                  focus:ring-accent-gold focus:ring-offset-dark-card transition duration-300" 
+                           class="rounded-sm border-white/10 text-accent-gold bg-dark-bg shadow-sm 
+                                  focus:ring-accent-gold transition duration-300 w-3 h-3" 
                            name="remember">
-                    <span class="ms-2 text-sm text-gray-400 group-hover:text-white transition duration-300">{{ __('Remember me') }}</span>
+                    <span class="ms-2 text-gray-500 group-hover:text-white transition-colors">{{ __('Ingat Saya') }}</span>
                 </label>
-            </div>
 
-            <div class="flex items-center justify-between mt-8 pt-4 border-t border-gray-700">
                 @if (Route::has('password.request'))
-                    <a class="underline text-sm text-gray-400 hover:text-accent-gold transition duration-300
-                              rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-gold focus:ring-offset-dark-card" 
+                    <a class="text-gray-500 hover:text-accent-gold transition-colors" 
                        href="{{ route('password.request') }}">
-                        {{ __('Forgot your password?') }}
+                        {{ __('Lupa Sandi?') }}
                     </a>
                 @endif
-
-                {{-- Tombol Login: Besar, Bold, dan Rounded-Full --}}
-                <x-primary-button class="ms-4 px-8 py-3 bg-accent-gold hover:bg-yellow-400 
-                                         text-dark-bg font-black uppercase tracking-widest rounded-full 
-                                         shadow-xl shadow-accent-gold/30 transition ease-in-out duration-300 
-                                         transform hover:scale-105">
-                    {{ __('Log in') }}
-                </x-primary-button>
             </div>
 
-            <!-- Link to Register Page -->
+            {{-- Tombol Login --}}
+            <div class="pt-4">
+                <button type="submit" 
+                        class="w-full py-4 bg-accent-gold text-dark-bg font-black uppercase tracking-[0.3em] text-[11px] rounded-2xl
+                               shadow-[0_15px_30px_rgba(255,195,0,0.2)] hover:shadow-accent-gold/40 hover:-translate-y-1 active:scale-95 transition-all duration-300">
+                    {{ __('Buka Akses Sekarang') }}
+                </button>
+            </div>
+
             @if (Route::has('register'))
-                <div class="text-center mt-6 text-sm text-gray-400">
-                    Belum punya akun? 
-                    <a href="{{ route('register') }}" class="underline text-accent-gold hover:text-yellow-400 font-bold transition duration-300">
-                        Daftar Sekarang
-                    </a>
+                <div class="text-center mt-8">
+                    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-600">
+                        Belum punya akun? 
+                        <a href="{{ route('register') }}" class="text-accent-gold hover:text-white transition-colors ml-1 underline decoration-2 underline-offset-4">
+                            Daftar Member
+                        </a>
+                    </p>
                 </div>
             @endif
         </form>

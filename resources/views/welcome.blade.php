@@ -1,172 +1,171 @@
 <x-app-layout>
-    {{-- Pastikan ini memanggil komponen navigasi yang sudah dimodifikasi --}}
+    <div class="pt-16 bg-dark-bg text-white">
 
-    <div class="pt-16">
-
-        {{-- Hero Section (Tetap sama, menggunakan warna Gold untuk highlight) --}}
+        {{-- Hero Section (Enhanced) --}}
         <section id="hero" 
             class="relative h-[85vh] flex items-center justify-center overflow-hidden bg-dark-bg bg-cover bg-center"
-            style="background-image: url('{{ asset('images/sporty-minisoccer-bg.jpg') }}');">
+            style="background-image: url('https://images.unsplash.com/photo-1529900748604-07564a03e7a6?q=80&w=2070&auto=format&fit=crop');">
             
-            <div class="absolute inset-0 bg-black/80 z-10"></div> 
+            <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-dark-bg z-10"></div> 
 
-            <div class="relative z-20 text-center max-w-4xl px-4">
-                {{-- Teks dan Warna Gold --}}
-                <p class="text-accent-gold text-lg font-bold uppercase tracking-widest mb-4 animate-pulse">
-                    #SPORTINSTRESSOUT
-                </p>
-                <h1 class="text-5xl md:text-7xl font-extrabold uppercase leading-tight text-white mb-6">
-                    Cahaya Sorot <span class="text-accent-gold">nyala</span>, masalah padam, kamu yang jadi pusat permainan.
+            <div class="relative z-20 text-center max-w-5xl px-4">
+                <div class="inline-block px-4 py-1 border border-accent-gold/50 rounded-full mb-6 bg-accent-gold/10">
+                    <p class="text-accent-gold text-xs md:text-sm font-bold uppercase tracking-[0.3em] animate-pulse">
+                        #SPORTINSTRESSOUT
+                    </p>
+                </div>
+
+                <h1 class="text-5xl md:text-8xl font-extrabold uppercase leading-[1.1] mb-6 drop-shadow-2xl">
+                    Cahaya Sorot <span class="text-accent-gold italic">nyala</span>,<br> 
+                    <span class="text-white/90 text-4xl md:text-6xl">Kamu yang jadi pusat permainan.</span>
                 </h1>
-                <p class="text-gray-300 text-xl mb-10 tracking-wide">
-                    Pesan slot lapangan mini soccer terbaik di lokasi kami sekarang juga dalam hitungan detik.
+                
+                <p class="text-gray-400 text-lg md:text-xl mb-10 tracking-wide max-w-2xl mx-auto leading-relaxed italic">
+                    "Pesan slot lapangan mini soccer terbaik di lokasi kami sekarang juga dalam hitungan detik.
                 </p>
                 
-                {{-- Tombol Gold --}}
-                <a href="#lapangan" class="inline-block py-4 px-10 bg-accent-gold text-dark-bg rounded-full font-bold uppercase text-lg tracking-wider 
-                                            transition duration-300 transform hover:scale-105 shadow-lg shadow-accent-gold/50 hover:shadow-xl">
-                    Booking Sekarang!
+                <a href="#lapangan" class="group relative inline-block py-4 px-12 bg-accent-gold text-dark-bg rounded-full font-bold uppercase text-lg tracking-wider overflow-hidden transition duration-300 shadow-[0_0_20px_rgba(212,175,55,0.3)] hover:shadow-[0_0_30px_rgba(212,175,55,0.6)]">
+                    <span class="relative z-10">Booking Sekarang!</span>
+                    <div class="absolute top-0 -left-full w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-all duration-500 group-hover:left-full"></div>
                 </a>
             </div>
+            <div class="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-accent-gold/50 to-transparent z-20"></div>
         </section>
 
-        {{-- Section Lapangan Tersedia (Rombakan Gold Mode) --}}
-        <section id="lapangan" class="py-20 bg-dark-bg">
+        {{-- Section Lapangan Tersedia (Improved Cards) --}}
+        <section id="lapangan" class="py-24 bg-dark-bg">
             <div class="container mx-auto px-4 max-w-7xl">
-                <h2 class="text-4xl font-extrabold text-white text-center mb-12 uppercase tracking-wider">
-                    Pilihan Lapangan <span class="text-accent-gold">Terbaik</span>
-                </h2>
+                <div class="flex flex-col items-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-extrabold text-white text-center uppercase tracking-wider mb-4">
+                        Pilihan Lapangan <span class="text-accent-gold">Terbaik</span>
+                    </h2>
+                    <div class="h-1 w-24 bg-accent-gold rounded-full"></div>
+                </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                     @forelse ($fields as $field)
-                        <a href="{{ url('lapangan/' . $field->id) }}" class="block">
-                            {{-- Card Dark/Gold --}}
-                            <div class="bg-dark-card rounded-xl border border-accent-gold/10 shadow-2xl shadow-black/70 
-                                         hover:shadow-accent-gold/40 transition duration-300 overflow-hidden transform hover:-translate-y-1 hover:border-accent-gold/50">
-                                
-                                <div class="relative h-60 w-full">
+                        <div class="group bg-dark-card rounded-2xl border border-white/5 shadow-2xl overflow-hidden transition-all duration-500 hover:border-accent-gold/50 hover:-translate-y-3">
+                            <a href="{{ url('lapangan/' . $field->id) }}" class="block">
+                                <div class="relative h-64 w-full overflow-hidden">
                                     @if ($field->image_path)
                                         <img src="{{ asset('storage/' . $field->image_path) }}" 
-                                            alt="Gambar Lapangan {{ $field->name }}" 
-                                            class="w-full h-full object-cover transition duration-500 hover:opacity-80">
+                                            alt="{{ $field->name }}" 
+                                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                                     @else
-                                        <div class="w-full h-full bg-gray-800 flex items-center justify-center">
-                                            <span class="text-gray-500 font-light">Image Not Found</span>
+                                        <div class="w-full h-full bg-gray-800 flex flex-col items-center justify-center text-gray-500">
+                                            <svg class="w-12 h-12 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                            <span class="text-xs uppercase tracking-widest">No Image Available</span>
                                         </div>
                                     @endif
-                                    
-                                    {{-- Badge Gold --}}
-                                    <span class="absolute top-4 right-4 bg-accent-gold text-dark-bg text-xs font-bold px-4 py-1 rounded-full shadow-lg">
-                                        BOOK NOW
+                                    <div class="absolute inset-0 bg-gradient-to-t from-dark-card via-transparent to-transparent opacity-60"></div>
+                                    <span class="absolute top-4 right-4 bg-accent-gold text-dark-bg text-[10px] font-black px-3 py-1 rounded-md tracking-tighter">
+                                        POPULAR SLOTS
                                     </span>
                                 </div>
                                 
-                                <div class="p-6">
-                                    <h2 class="text-2xl font-extrabold text-white mb-2 uppercase">{{ $field->name }}</h2>
-                                    
-                                    <p class="text-gray-400 text-sm mb-4 line-clamp-2">
-                                        {{ $field->description ?? 'Lapangan berkualitas tinggi dengan fasilitas lengkap.' }}
+                                <div class="p-8">
+                                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-accent-gold transition-colors">{{ $field->name }}</h3>
+                                    <p class="text-gray-400 text-sm leading-relaxed mb-6 line-clamp-2 italic">
+                                        "{{ $field->description ?? 'Nikmati pengalaman bermain terbaik dengan rumput standar FIFA.' }}"
                                     </p>
                                     
-                                    <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-700">
-                                        <span class="text-sm font-semibold text-accent-gold uppercase tracking-wider">Mulai Dari</span>
-                                        <span class="text-2xl font-extrabold text-white">
-                                            Rp {{ number_format($field->min_price ?? 100000, 0, ',', '.') }}<span class="text-base text-gray-400 font-normal">/jam</span>
-                                        </span>
+                                    <div class="flex items-end justify-between border-t border-white/10 pt-6">
+                                        <div>
+                                            <p class="text-[10px] uppercase text-gray-500 tracking-widest mb-1">Mulai Dari</p>
+                                            <p class="text-2xl font-black text-white">
+                                                <span class="text-accent-gold text-sm">Rp</span> {{ number_format($field->min_price ?? 100000, 0, ',', '.') }}
+                                            </p>
+                                        </div>
+                                        <div class="bg-accent-gold/10 p-2 rounded-lg group-hover:bg-accent-gold transition-all duration-300">
+                                            <svg class="w-6 h-6 text-accent-gold group-hover:text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                                        </div>
                                     </div>
-                                    
-                                    {{-- Tombol Gold Outline --}}
-                                    <button class="mt-6 w-full py-3 border border-accent-gold text-accent-gold rounded-full font-bold uppercase 
-                                                     hover:bg-accent-gold hover:text-dark-bg transition duration-300 tracking-wider">
-                                        Lihat Slot & Detail
-                                    </button>
                                 </div>
-                            </div>
-                        </a>
+                            </a>
+                        </div>
                     @empty
-                        <p class="text-gray-400 text-center col-span-full py-10">
-                            😔 Belum ada data lapangan yang tersedia saat ini. Silakan cek kembali nanti.
-                        </p>
+                        <div class="col-span-full py-20 text-center border-2 border-dashed border-white/10 rounded-3xl">
+                            <p class="text-gray-500 italic">Jadwal lapangan belum tersedia untuk saat ini...</p>
+                        </div>
                     @endforelse
                 </div>
             </div>
         </section>
 
-        {{-- Section Keunggulan (Gold Mode) --}}
-        <section id="keunggulan" class="py-20 bg-dark-card border-t border-b border-accent-gold/20">
-            <div class="container mx-auto px-4 max-w-7xl">
+        {{-- Section Keunggulan (Modern Glassmorphism) --}}
+        <section id="keunggulan" class="py-24 bg-dark-card relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-64 h-64 bg-accent-gold/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+            <div class="container mx-auto px-4 max-w-7xl relative z-10">
                 <h2 class="text-4xl font-extrabold text-white text-center mb-16 uppercase tracking-wider">
-                    Kenapa Booking di <span class="text-accent-gold">Sini?</span>
+                    Eksklusivitas <span class="text-accent-gold">Layanan</span>
                 </h2>
                 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                    
-                    <div class="p-8 bg-dark-bg rounded-xl shadow-xl hover:shadow-accent-gold/40 transition duration-300 transform hover:-translate-y-2">
-                        {{-- Icon Gold --}}
-                        <svg class="w-12 h-12 text-accent-gold mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        <h3 class="text-xl font-bold text-white mb-2">Booking Kilat</h3>
-                        <p class="text-gray-400">Pesan slot lapangan hanya dalam 3 langkah cepat. Tidak ada penantian lama.</p>
-                    </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    @php
+                        $features = [
+                            ['title' => 'Booking Kilat', 'desc' => 'Sistem pemesanan cerdas tanpa perlu menunggu admin.', 'icon' => 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'],
+                            ['title' => 'Keamanan Transaksi', 'desc' => 'Enkripsi pembayaran aman untuk kenyamanan Anda.', 'icon' => 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z'],
+                            ['title' => 'Update Real-time', 'desc' => 'Data slot sinkron otomatis 100% akurat.', 'icon' => 'M13 10V3L4 14h7v7l9-11h-7z']
+                        ];
+                    @endphp
 
-                    <div class="p-8 bg-dark-bg rounded-xl shadow-xl hover:shadow-accent-gold/40 transition duration-300 transform hover:-translate-y-2">
-                        {{-- Icon Gold --}}
-                        <svg class="w-12 h-12 text-accent-gold mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                        <h3 class="text-xl font-bold text-white mb-2">Pembayaran Aman</h3>
-                        <p class="text-gray-400">Didukung sistem pembayaran terverifikasi, transaksi Anda 100% aman.</p>
-                    </div>
-
-                    <div class="p-8 bg-dark-bg rounded-xl shadow-xl hover:shadow-accent-gold/40 transition duration-300 transform hover:-translate-y-2">
-                        {{-- Icon Gold --}}
-                        <svg class="w-12 h-12 text-accent-gold mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M17 17h.01"></path></svg>
-                        <h3 class="text-xl font-bold text-white mb-2">Slot Real-time</h3>
-                        <p class="text-gray-400">Jadwal lapangan selalu terupdate secara instan. Tidak ada lagi *double booking*.</p>
-                    </div>
-
+                    @foreach($features as $f)
+                        <div class="group p-10 bg-dark-bg/50 backdrop-blur-sm border border-white/5 rounded-3xl hover:border-accent-gold/30 transition duration-500">
+                            <div class="w-16 h-16 bg-accent-gold/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+                                <svg class="w-8 h-8 text-accent-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $f['icon'] }}"></path></svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-4 tracking-tight group-hover:text-accent-gold">{{ $f['title'] }}</h3>
+                            <p class="text-gray-500 text-sm leading-relaxed">{{ $f['desc'] }}</p>
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </section>
         
-        {{-- Footer (Gold Mode) --}}
-        <footer class="bg-dark-card border-t border-accent-gold/30 py-10">
+        {{-- Footer (Premium Style) --}}
+        <footer class="bg-dark-bg border-t border-white/5 pt-20 pb-10">
             <div class="container mx-auto px-4 max-w-7xl">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
                     
-                    <div class="col-span-2 md:col-span-1">
-                        <span class="text-3xl font-extrabold text-accent-gold tracking-widest uppercase">
-                            MINI<span class="text-white">SOCCER</span>
+                    <div class="col-span-1">
+                        <span class="text-3xl font-black text-accent-gold tracking-tighter uppercase">
+                            F9<span class="text-white">MINI</span>SOCCER
                         </span>
-                        <p class="text-gray-500 text-sm mt-3">Play with passion, book with ease.</p>
-                        <p class="text-gray-600 text-xs mt-6">&copy; {{ date('Y') }} Booking Minisoccer. All rights reserved.</p>
+                        <p class="text-gray-500 text-sm mt-6 leading-relaxed">
+                            Penyedia lapangan mini soccer kualitas premium dengan sistem booking paling modern di Indonesia.
+                        </p>
                     </div>
                     
                     <div>
-                        <h4 class="text-lg font-bold text-white mb-4 border-b border-accent-gold/50 pb-1">Navigasi</h4>
-                        <ul class="space-y-2 text-gray-400 text-sm">
-                            <li><a href="#lapangan" class="hover:text-accent-gold transition duration-200">Lapangan</a></li>
-                            <li><a href="#keunggulan" class="hover:text-accent-gold transition duration-200">Keunggulan</a></li>
-                            <li><a href="{{ route('login') ?? '#' }}" class="hover:text-accent-gold transition duration-200">Login</a></li>
+                        <h4 class="text-white font-bold mb-6 uppercase tracking-widest text-xs">Navigasi</h4>
+                        <ul class="space-y-4 text-gray-500 text-sm">
+                            <li><a href="#lapangan" class="hover:text-accent-gold transition">Katalog Lapangan</a></li>
+                            <li><a href="#keunggulan" class="hover:text-accent-gold transition">Layanan Unggulan</a></li>
+                            <li><a href="#" class="hover:text-accent-gold transition">Cara Pesan</a></li>
                         </ul>
                     </div>
                     
                     <div>
-                        <h4 class="text-lg font-bold text-white mb-4 border-b border-accent-gold/50 pb-1">Bantuan</h4>
-                        <ul class="space-y-2 text-gray-400 text-sm">
-                            <li><a href="#" class="hover:text-accent-gold transition duration-200">FAQ</a></li>
-                            <li><a href="#" class="hover:text-accent-gold transition duration-200">Kebijakan Privasi</a></li>
-                            <li><a href="{{ route('contact-us') ?? '#' }}" class="hover:text-accent-gold transition duration-200">Kontak Kami</a></li>
+                        <h4 class="text-white font-bold mb-6 uppercase tracking-widest text-xs">Bantuan</h4>
+                        <ul class="space-y-4 text-gray-500 text-sm">
+                            <li><a href="#" class="hover:text-accent-gold transition">Pusat Bantuan</a></li>
+                            <li><a href="#" class="hover:text-accent-gold transition">Syarat & Ketentuan</a></li>
+                            <li><a href="#" class="hover:text-accent-gold transition">Kebijakan Pembatalan</a></li>
                         </ul>
                     </div>
                     
                     <div>
-                        <h4 class="text-lg font-bold text-white mb-4 border-b border-accent-gold/50 pb-1">Hubungi Kami</h4>
-                        <p class="text-gray-400 text-sm">Email: support@minisoccer.id</p>
-                        <p class="text-gray-400 text-sm mt-2">Telp: (021) 123-4567</p>
-                        <div class="flex space-x-3 mt-4 text-accent-gold">
-                            {{-- Placeholder untuk ikon media sosial (Tetap warna Gold) --}}
-                            <svg class="w-6 h-6 hover:text-white transition duration-200" fill="currentColor" viewBox="0 0 24 24"><path d="M7 10v4h3v7h4v-7h3l1-4h-4V8a2 2 0 012-2h2V2h-4a5 5 0 00-5 5v3H7z"/></svg> <svg class="w-6 h-6 hover:text-white transition duration-200" fill="currentColor" viewBox="0 0 24 24"><path d="M22 4.01c-.885.39-1.83.65-2.82.77.962-.57 1.706-1.48 2.05-2.55-.907.54-1.916.93-2.98.96C18.33 3.49 17.2 3 16 3c-2.484 0-4.5 2.016-4.5 4.5 0 .35.04.69.11 1.02-3.73-.19-7.03-1.97-9.24-4.68-.387.66-.58 1.4-.58 2.21 0 1.56.79 2.94 1.99 3.75-.72-.02-1.4-.22-2-.56v.05c0 2.18 1.55 4 3.6 4.42-.36.1-.73.15-1.12.15-.27 0-.53-.03-.79-.08.57 1.79 2.24 3.1 4.2 3.14-1.54 1.2-3.48 1.92-5.59 1.92-.36 0-.71-.02-1.06-.06 2 1.28 4.38 2.03 6.88 2.03 8.27 0 12.77-6.86 12.77-12.86 0-.2-.01-.4-.02-.6.94-.68 1.76-1.53 2.4-2.5z"/></svg> </div>
+                        <h4 class="text-white font-bold mb-6 uppercase tracking-widest text-xs">Stay Connected</h4>
+                        <div class="flex space-x-4">
+                            <a href="#" class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:border-accent-gold hover:text-accent-gold transition">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                            </a>
+                        </div>
                     </div>
-                    
+                </div>
+                
+                <div class="border-t border-white/5 pt-10 text-center">
+                    <p class="text-gray-600 text-xs tracking-widest uppercase">&copy; {{ date('Y') }} F9 Minisoccer. Crafted for Winners.</p>
                 </div>
             </div>
         </footer>

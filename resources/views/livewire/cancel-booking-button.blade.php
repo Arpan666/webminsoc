@@ -1,47 +1,53 @@
-{{-- resources/views/livewire/cancel-booking-button.blade.php --}}
-
-<div x-data="{ open: false }">
-    <button @click="open = true" 
-            class="mt-2 w-full md:w-auto px-4 py-2 text-sm font-bold text-white bg-gray-500 rounded-lg hover:bg-gray-600 transition duration-150">
-        Batalkan Pesanan
+<div>
+    <button 
+        type="button"
+        x-data
+        x-on:click="
+            Swal.fire({
+                title: 'BATALKAN PESANAN?',
+                text: 'Tindakan ini tidak dapat dibatalkan, Bos!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#1e293b',
+                confirmButtonText: 'YA, BATALKAN!',
+                cancelButtonText: 'TIDAK, KEMBALI',
+                background: '#111827',
+                color: '#fff',
+                iconColor: '#ef4444',
+                customClass: {
+                    popup: 'border border-white/10 rounded-[2rem]',
+                    confirmButton: 'rounded-xl font-black uppercase tracking-widest text-[10px] py-3 px-6',
+                    cancelButton: 'rounded-xl font-black uppercase tracking-widest text-[10px] py-3 px-6'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $wire.cancel()
+                }
+            })
+        "
+        class="w-full text-center py-3 px-6 bg-red-600/10 hover:bg-red-600 text-red-500 hover:text-white border border-red-600/20 hover:border-red-600 rounded-xl font-black uppercase text-[10px] tracking-widest transition-all duration-300 flex items-center justify-center gap-2 group"
+    >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+        <span>Batalkan Pesanan</span>
     </button>
-
-    {{-- Modal Konfirmasi (Menggunakan Alpine.js untuk UX yang lebih baik) --}}
-    <div x-show="open" 
-         x-transition:enter="ease-out duration-300"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="ease-in duration-200"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
-         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-         style="display: none;">
-        
-        <div @click.away="open = false"
-             x-transition:enter="ease-out duration-300"
-             x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-             x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
-             x-transition:leave="ease-in duration-200"
-             x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
-             x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-             class="bg-white p-6 rounded-lg shadow-2xl max-w-sm w-full">
-            
-            <h3 class="text-xl font-bold mb-4 text-red-600">Konfirmasi Pembatalan</h3>
-            <p class="text-gray-700 mb-6">Anda yakin ingin membatalkan pemesanan lapangan **{{ $booking->field->name }}** pada tanggal **{{ $booking->start_time->format('d M Y') }}**? Tindakan ini tidak dapat dibatalkan.</p>
-            
-            <div class="flex justify-end space-x-3">
-                <button @click="open = false" 
-                        type="button"
-                        class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition duration-150">
-                    Batal
-                </button>
-                <button wire:click.prevent="cancel" 
-                        @click="open = false"
-                        type="button"
-                        class="px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 font-bold transition duration-150">
-                    Ya, Batalkan
-                </button>
-            </div>
-        </div>
-    </div>
 </div>
+
+<script>
+    window.addEventListener('swal:success', event => {
+        Swal.fire({
+            title: 'BERHASIL!',
+            text: event.detail.message,
+            icon: 'success',
+            background: '#111827',
+            color: '#fff',
+            confirmButtonColor: '#d4af37',
+            customClass: {
+                popup: 'border border-white/10 rounded-[2rem]',
+                confirmButton: 'rounded-xl font-black uppercase tracking-widest text-[10px] py-3 px-6'
+            }
+        });
+    });
+</script>

@@ -4,11 +4,23 @@
         <div class="lg:col-span-2 space-y-6">
             <h1 class="text-3xl font-bold text-white uppercase">{{ $field->name }}</h1>
             
-            <div class="rounded-xl overflow-hidden shadow-lg border border-gray-700">
-                <img src="{{ asset('storage/' . $field->image) }}" 
-                     alt="{{ $field->name }}" 
-                     class="w-full h-96 object-cover"
-                     onerror="this.src='https://via.placeholder.com/800x400?text=No+Image'">
+            <div class="rounded-xl overflow-hidden shadow-lg border border-gray-700 bg-gray-800">
+                {{-- Logic Image Fix --}}
+                @php
+                    $img = $field->image ?? $field->image_path;
+                @endphp
+                @if($img && Storage::disk('public')->exists($img))
+                    <img src="{{ asset('storage/' . $img) }}" 
+                         alt="{{ $field->name }}" 
+                         class="w-full h-96 object-cover">
+                @else
+                    <div class="w-full h-96 flex flex-col items-center justify-center bg-gray-900 text-gray-600">
+                        <svg class="w-16 h-16 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        <p>Foto Lapangan Belum Tersedia</p>
+                    </div>
+                @endif
             </div>
 
             <div class="bg-gray-900 p-6 rounded-xl border border-gray-800">
@@ -27,12 +39,6 @@
                     </div>
                 @endif
                 
-                @if (session()->has('price_error'))
-                     <div class="bg-yellow-500/10 border border-yellow-500 text-yellow-500 px-4 py-2 rounded mb-4 text-sm">
-                        {{ session('price_error') }}
-                    </div>
-                @endif
-
                 <div class="mb-4">
                     <label class="block text-gray-400 text-sm mb-2">Pilih Tanggal</label>
                     <input type="date" 
@@ -70,7 +76,6 @@
                     @else
                         <div class="text-red-400 text-sm">Tidak ada slot tersedia.</div>
                     @endif
-                    @error('selectedTime') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                 </div>
 
                 <div class="text-center mb-6">

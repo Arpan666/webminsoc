@@ -1,121 +1,104 @@
 <x-app-layout>
-
     {{-- Header Page --}}
     <x-slot name="header">
-        {{ __('Hubungi Kami') }}
+        {{-- Kita hilangkan kesan 'blok' dengan membuat container ini transparan --}}
+        <div class="pt-20 bg-transparent"> 
+            <h2 class="font-black text-xl text-accent-gold uppercase tracking-[0.4em] text-center drop-shadow-lg">
+                {{ __('Hubungi Kami') }}
+            </h2>
+        </div>
     </x-slot>
 
     {{-- Content Area --}}
-    <div class="pt-16 pb-20 bg-dark-bg min-h-screen">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    {{-- Kita kurangi pt-16 menjadi pt-8 karena header sudah punya padding atas --}}
+    <div class="bg-dark-bg min-h-screen pt-8 pb-20">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            <div class="text-center mb-12">
-                <h1 class="text-5xl font-extrabold text-white uppercase mb-4">
-                    {{-- Mengganti text-neon-green menjadi text-accent-gold --}}
-                    Kirim Pesan ke <span class="text-accent-gold">Tim Kami</span>
-                </h1>
-                <p class="text-gray-400 text-lg">
-                    Kami siap membantu Anda. Kirimkan pertanyaan, kritik, atau saran Anda.
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
                 
-                {{-- Contact Form Card (Gold Styled) --}}
-                {{-- Mengganti border-neon-green/10 menjadi border-accent-gold/10 --}}
-                <div class="bg-dark-card p-8 rounded-xl border border-accent-gold/10 shadow-xl shadow-black/50">
-                    {{-- Mengganti text-neon-green menjadi text-accent-gold --}}
-                    <h2 class="text-2xl font-bold text-accent-gold mb-6">Formulir Kontak</h2>
-                    
-                    <form action="#" method="POST">
-                        @csrf 
+                {{-- Bagian Kiri: Formulir Kontak (8 Kolom) --}}
+                <div class="lg:col-span-7">
+                    <div class="bg-dark-card p-8 md:p-10 rounded-[2.5rem] border border-white/5 shadow-2xl relative overflow-hidden h-full">
+                        {{-- Glow Effect --}}
+                        <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-accent-gold/5 rounded-full blur-[80px]"></div>
                         
-                        <div class="space-y-6">
-                            
-                            {{-- Name Field --}}
-                            <div>
-                                <label for="name" class="block text-sm font-medium text-gray-300 mb-1">Nama Lengkap</label>
-                                <input type="text" name="name" id="name" required
-                                        {{-- Mengganti border-neon-green/30 menjadi border-accent-gold/30 --}}
-                                        {{-- Mengganti focus:border-neon-light & focus:ring-neon-light menjadi accent-light --}}
-                                       class="w-full bg-dark-bg border-accent-gold/30 text-white rounded-lg shadow-inner 
-                                            focus:border-accent-light focus:ring-accent-light transition duration-200">
-                            </div>
-
-                            {{-- Email Field --}}
-                            <div>
-                                <label for="email" class="block text-sm font-medium text-gray-300 mb-1">Email Anda</label>
-                                <input type="email" name="email" id="email" required
-                                       class="w-full bg-dark-bg border-accent-gold/30 text-white rounded-lg shadow-inner 
-                                            focus:border-accent-light focus:ring-accent-light transition duration-200">
-                            </div>
-
-                            {{-- Message Field --}}
-                            <div>
-                                <label for="message" class="block text-sm font-medium text-gray-300 mb-1">Pesan Anda</label>
-                                <textarea name="message" id="message" rows="4" required
-                                             class="w-full bg-dark-bg border-accent-gold/30 text-white rounded-lg shadow-inner 
-                                                     focus:border-accent-light focus:ring-accent-light transition duration-200"></textarea>
-                            </div>
-                            
-                            {{-- Submit Button (CTA Gold) --}}
-                            <button type="submit"
-                                        {{-- Mengganti bg-neon-green menjadi bg-accent-gold, hover:bg-neon-light menjadi hover:bg-accent-light, shadow-neon menjadi shadow-gold --}}
-                                    class="w-full py-3 bg-accent-gold text-dark-bg rounded-lg font-bold uppercase text-lg tracking-wider 
-                                            hover:bg-accent-light transition duration-300 transform hover:scale-[1.01] shadow-gold">
+                        <div class="relative z-10">
+                            <h3 class="text-xl font-black text-white uppercase tracking-widest mb-8 flex items-center">
+                                <span class="w-6 h-1 bg-accent-gold mr-3 rounded-full"></span>
                                 Kirim Pesan
-                            </button>
+                            </h3>
+                            
+                            <form action="#" method="POST" class="space-y-5">
+                                @csrf 
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    <div>
+                                        <label class="block text-[10px] font-black text-accent-gold uppercase tracking-[0.2em] mb-2 ml-1">Nama Lengkap</label>
+                                        <input type="text" name="name" required
+                                               class="w-full bg-dark-bg border-white/5 text-white rounded-2xl py-3.5 px-6 focus:border-accent-gold focus:ring-1 focus:ring-accent-gold/20 transition duration-300 placeholder:text-gray-700"
+                                               placeholder="Nama Anda">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-black text-accent-gold uppercase tracking-[0.2em] mb-2 ml-1">Email</label>
+                                        <input type="email" name="email" required
+                                               class="w-full bg-dark-bg border-white/5 text-white rounded-2xl py-3.5 px-6 focus:border-accent-gold focus:ring-1 focus:ring-accent-gold/20 transition duration-300 placeholder:text-gray-700"
+                                               placeholder="Email@mail.com">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-[10px] font-black text-accent-gold uppercase tracking-[0.2em] mb-2 ml-1">Pesan</label>
+                                    <textarea name="message" rows="5" required
+                                              class="w-full bg-dark-bg border-white/5 text-white rounded-2xl py-3.5 px-6 focus:border-accent-gold focus:ring-1 focus:ring-accent-gold/20 transition duration-300 placeholder:text-gray-700"
+                                              placeholder="Apa yang ingin Anda tanyakan?"></textarea>
+                                </div>
+                                
+                                <button type="submit"
+                                        class="w-full py-4 bg-accent-gold text-dark-bg rounded-2xl font-black uppercase text-[11px] tracking-[0.3em] hover:shadow-[0_10px_40px_rgba(212,175,55,0.2)] transition-all duration-500 transform hover:-translate-y-1 active:scale-95">
+                                    Kirim Sekarang
+                                </button>
+                            </form>
                         </div>
-                    </form>
+                    </div>
                 </div>
 
-                {{-- Contact Info Card (Side Panel) --}}
-                {{-- Mengganti border-neon-green/10 menjadi border-accent-gold/10 --}}
-                <div class="bg-dark-card p-8 rounded-xl border border-accent-gold/10 shadow-xl shadow-black/50 space-y-6">
-                    {{-- Mengganti text-neon-green menjadi text-accent-gold --}}
-                    <h2 class="text-2xl font-bold text-accent-gold mb-6">Informasi Kontak</h2>
-                    
-                    {{-- Email --}}
-                    <div class="flex items-start space-x-4">
-                        {{-- Mengganti text-neon-light menjadi text-accent-light --}}
-                        <svg class="w-6 h-6 text-accent-light shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8m-18 4v8a2 2 0 002 2h14a2 2 0 002-2v-8m-18 0l9 5 9-5"></path></svg>
-                        <div>
-                            <p class="text-gray-300 font-semibold">Email Dukungan</p>
-                            {{-- Mengganti text-neon-green menjadi text-accent-gold --}}
-                            <a href="mailto:support@minisoccer.id" class="text-accent-gold hover:underline">support@f9minisoccer.com</a>
-                        </div>
-                    </div>
+                {{-- Bagian Kanan: Info Panel (5 Kolom) --}}
+                <div class="lg:col-span-5">
+                    <div class="bg-dark-card p-10 rounded-[2.5rem] border border-white/5 shadow-2xl h-full flex flex-col justify-center relative overflow-hidden">
+                        <div class="absolute -right-10 -top-10 w-32 h-32 bg-accent-gold/5 rounded-full blur-[60px]"></div>
+                        
+                        <h3 class="text-xl font-black text-white uppercase tracking-widest mb-10 flex items-center relative z-10">
+                            <span class="w-6 h-1 bg-accent-gold mr-3 rounded-full"></span>
+                            Info Kontak
+                        </h3>
+                        
+                        <div class="space-y-8 relative z-10">
+                            <div class="flex items-center group">
+                                <div class="p-3.5 bg-white/5 rounded-xl mr-5 group-hover:bg-accent-gold group-hover:rotate-6 transition-all duration-500">
+                                    <svg class="w-6 h-6 text-accent-gold group-hover:text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8m-18 4v8a2 2 0 002 2h14a2 2 0 002-2v-8m-18 0l9 5 9-5"></path></svg>
+                                </div>
+                                <div>
+                                    <p class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-0.5">Email Resmi</p>
+                                    <p class="text-white font-bold text-sm tracking-tight">support@f9minisoccer.com</p>
+                                </div>
+                            </div>
 
-                    {{-- Phone --}}
-                    <div class="flex items-start space-x-4">
-                        {{-- Mengganti text-neon-light menjadi text-accent-light --}}
-                        <svg class="w-6 h-6 text-accent-light shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.144a11.042 11.042 0 005.516 5.516l1.144-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.742 21 3 14.258 3 6V5z"></path></svg>
-                        <div>
-                            <p class="text-gray-300 font-semibold">Telepon / WhatsApp</p>
-                            {{-- Mengganti text-neon-green menjadi text-accent-gold. Mengganti nomor telepon ke format yang lebih umum di Lhokseumawe/Aceh--}}
-                            <a href="https://wa.me/628126999888" target="_blank" class="text-accent-gold hover:underline">+62 812-6999-888</a>
+                            <div class="flex items-center group">
+                                <div class="p-3.5 bg-white/5 rounded-xl mr-5 group-hover:bg-accent-gold group-hover:-rotate-6 transition-all duration-500">
+                                    <svg class="w-6 h-6 text-accent-gold group-hover:text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.144a11.042 11.042 0 005.516 5.516l1.144-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.742 21 3 14.258 3 6V5z"></path></svg>
+                                </div>
+                                <div>
+                                    <p class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-0.5">WhatsApp Admin</p>
+                                    <p class="text-white font-bold text-sm tracking-tight">+62 812-6999-888</p>
+                                </div>
+                            </div>
+
+                            <div class="pt-8 mt-8 border-t border-white/5 relative">
+                                <p class="text-gray-500 text-[10px] leading-relaxed italic uppercase tracking-wider">
+                                    Tersedia Setiap Hari<br>
+                                    <span class="text-accent-gold/60">08:00 — 23:00 WIB</span>
+                                </p>
+                            </div>
                         </div>
-                    </div>
-                    
-                    {{-- Location (Google Maps Iframe) --}}
-                    <div>
-                        <p class="text-gray-300 font-semibold mb-3">Lokasi Kami: F9 MINI SOCCER</p>
-                        {{-- MENGGANTI PLACEHOLDER dengan Iframe Google Maps --}}
-                        <div class="h-48 bg-dark-bg border border-accent-gold/30 rounded-lg flex items-center justify-center overflow-hidden">
-                            <iframe 
-                                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3973.561366080626!2d97.1335548!3d5.1740216!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3047830027eb11ad%3A0x4b7a7e15d6e2a44b!2sF9%20MINI%20SOCCER!5e0!3m2!1sid!2sid!4v1763998658666!5m2!1sid!2sid" 
-                                width="100%" 
-                                height="100%" 
-                                style="border:0;" 
-                                allowfullscreen="" 
-                                loading="lazy" 
-                                referrerpolicy="no-referrer-when-downgrade">
-                            </iframe>
-                        </div>
-                        <p class="text-xs text-gray-500 mt-2">
-                            Jl. Merdeka Timur, Cunda, Lhokseumawe.
-                            <a href="https://maps.app.goo.gl/link-ke-f9-minisoccer" target="_blank" class="text-accent-gold hover:underline">Lihat Petunjuk Arah Lengkap</a>
-                        </p>
                     </div>
                 </div>
             </div>

@@ -21,10 +21,10 @@
         
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-dark-bg">
             <div>
-                <a href="/">
+                <!-- <a href="/">
                     {{-- Logo yang menonjol menggunakan accent-gold --}}
                     <x-application-logo class="w-24 h-24 fill-current text-accent-gold hover:text-white transition duration-300" />
-                </a>
+                </a> -->
             </div>
 
             {{-- Card kontainer yang menggunakan warna gelap dan shadow yang kuat --}}
