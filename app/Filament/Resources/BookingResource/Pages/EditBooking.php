@@ -5,32 +5,24 @@ namespace App\Filament\Resources\BookingResource\Pages;
 use App\Filament\Resources\BookingResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Support\Carbon;
 
 class EditBooking extends EditRecord
 {
     protected static string $resource = BookingResource::class;
 
-    // Menghilangkan aksi dari header halaman (tempat default tombol delete berada)
-    protected function getHeaderActions(): array
+    protected function getHeaderActions(): array { return [Actions\DeleteAction::make()]; }
+
+    protected function mutateFormDataBeforeSave(array $data): array
     {
-        return []; 
-    }
-
-    // Menambahkan aksi ke bagian bawah form (tempat tombol Save changes dan Cancel berada)
-    protected function getFormActions(): array
-    {
-        $formActions = parent::getFormActions();
-
-        // Tombol DELETE
-        $deleteAction = Actions\DeleteAction::make()
-            ->color('danger')
-            ->modalHeading('Hapus Pemesanan')
-            ->modalSubheading('Apakah Anda yakin ingin menghapus pemesanan ini secara permanen? Tindakan ini tidak dapat dibatalkan.')
-            ->label('Delete');
-
-        // Tambahkan tombol Delete ke Form Actions
-        $formActions[] = $deleteAction;
-
-        return $formActions;
+        if (isset($data['booking_date']) && isset($data['booking_time'])) {
+            $d = Carbon::parse($data['booking_date'])->format('Y-m-d');
+            $t = Carbon::parse($data['booking_time'])->format('H:i:s');
+            $start = Carbon::parse($d . ' ' . $t);
+            
+            $data['start_time'] = $start;
+            $data['end_time'] = $start->copy()->addHours((int)$data['duration']);
+        }
+        return $data;
     }
 }

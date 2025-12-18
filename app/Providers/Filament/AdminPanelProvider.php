@@ -9,6 +9,7 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Enums\MaxWidth;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -29,17 +30,35 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->colors([
                 'primary' => Color::Amber,
+                'gray' => Color::Slate,
+            ])
+            ->brandName('F9 Minisoccer Elite')
+            ->maxContentWidth(MaxWidth::ScreenExtraLarge)
+            ->darkMode(true)
+            ->sidebarCollapsibleOnDesktop()
+            ->navigationGroups([
+                'Transaksi Booking',
+                'Manajemen Lapangan',
+                'Pengaturan Sistem',
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+// ... kode di atas tetap sama ...
             ->pages([
                 Pages\Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
-        
+                // Baris 1: Angka Statistik (Full Width)
+                \App\Filament\Widgets\StatsOverview::class,
+                
+                // Baris 2: Dua Chart Sejajar (Kiri & Kanan)
+                \App\Filament\Widgets\FieldUsageChart::class,
+                \App\Filament\Widgets\IncomeChart::class,
+                
+                // Baris 3: Profil User (Ditaruh bawah agar tidak merusak layout)
+                \Filament\Widgets\AccountWidget::class,
             ])
+// ... kode di bawah tetap sama ...
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -51,8 +70,6 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
-            ->authMiddleware([
-                Authenticate::class,  // sudah cukup!
-            ]);
+            ->authMiddleware([Authenticate::class]);
     }
 }

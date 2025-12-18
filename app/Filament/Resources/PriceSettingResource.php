@@ -14,7 +14,7 @@ class PriceSettingResource extends Resource
 {
     protected static ?string $model = PriceSetting::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
     protected static ?string $navigationLabel = 'Pengaturan Harga';
     protected static ?string $pluralLabel = 'Pengaturan Harga Lapangan';
 

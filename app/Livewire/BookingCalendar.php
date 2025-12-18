@@ -13,14 +13,15 @@ class BookingCalendar extends Component
 {
     public Field $field;
     public $selectedDate;
-    public $duration = 1;
+    // Bos minta dikunci 2 jam, jadi default langsung set ke 2
+    public $duration = 2; 
     public $availableSlots = [];
     public $selectedTime;
     public $totalPrice = 0;
 
     protected $rules = [
         'selectedDate' => 'required|date|after_or_equal:today',
-        'duration' => 'required|integer|min:1|max:3',
+        'duration' => 'required|integer|in:2', // Hanya boleh angka 2
         'selectedTime' => 'required',
     ];
 
@@ -33,8 +34,9 @@ class BookingCalendar extends Component
 
     public function updated($propertyName)
     {
-        if (in_array($propertyName, ['selectedDate', 'duration'])) {
-            if ($propertyName === 'selectedDate') $this->selectedTime = null;
+        // Tetap pantau perubahan tanggal
+        if (in_array($propertyName, ['selectedDate'])) {
+            $this->selectedTime = null;
             $this->loadAvailableSlots();
             $this->calculateTotalPrice();
         }
@@ -46,9 +48,94 @@ class BookingCalendar extends Component
         $this->calculateTotalPrice();
     }
 
+    public function loadAvailableSlots()
+    {
+        $this->availableSlots = [];
+        $date = Carbon::parse($this->selectedDate);
+        
+        if ($date->isPast() && !$date->isToday()) {
+            return;
+        }
+
+        $dayType = $date->isWeekend() ? 'weekend' : 'weekday';
+
+        $settings = PriceSetting::where('field_id', $this->field->id)
+            ->where('day_type', $dayType)
+            ->get();
+
+        $bookings = Booking::where('field_id', $this->field->id)
+            ->whereDate('start_time', $this->selectedDate)
+            ->whereIn('status', ['confirmed', 'pending_verification'])
+            ->get();
+
+        $allBookedSlots = [];
+        foreach ($bookings as $booking) {
+            $start = Carbon::parse($booking->start_time);
+            $end = Carbon::parse($booking->end_time);
+            while ($start < $end) {
+                $allBookedSlots[] = $start->format('H:i');
+                $start->addHour();
+            }
+        }
+
+        foreach ($settings as $setting) {
+            $start = Carbon::parse($setting->start_time);
+            $end = Carbon::parse($setting->end_time);
+
+            while ($start < $end) {
+                $slotTime = $start->format('H:i');
+                
+                $isPastTime = false;
+                if ($date->isToday()) {
+                    $slotDateTime = Carbon::parse($this->selectedDate . ' ' . $slotTime);
+                    if ($slotDateTime->lt(now()->addMinutes(15))) {
+                        $isPastTime = true;
+                    }
+                }
+
+                // Sistem akan otomatis cek apakah 2 jam ke depan (slot ini + jam berikutnya) tersedia
+                if (!$isPastTime && $this->isSlotAvailableForDuration($slotTime, $date, $allBookedSlots)) {
+                    $this->availableSlots[] = ['time' => $slotTime];
+                }
+                $start->addHour();
+            }
+        }
+
+        $this->availableSlots = array_values(collect($this->availableSlots)->unique('time')->sortBy('time')->toArray());
+
+        if (!empty($this->availableSlots)) {
+            if (empty($this->selectedTime) || !collect($this->availableSlots)->contains('time', $this->selectedTime)) {
+                $this->selectedTime = $this->availableSlots[0]['time'];
+            }
+        } else {
+            $this->selectedTime = null;
+        }
+        
+        $this->calculateTotalPrice();
+    }
+
+    protected function isSlotAvailableForDuration($startTime, $date, $bookedSlots): bool
+    {
+        $checkTime = Carbon::parse($date->toDateString() . ' ' . $startTime);
+        // Loop ini akan berjalan 2x (0 dan 1) untuk memastikan slot jam 1 dan jam ke-2 aman
+        for ($i = 0; $i < (int)$this->duration; $i++) {
+            $slot = $checkTime->copy()->addHours($i)->format('H:i');
+            if (in_array($slot, $bookedSlots)) return false;
+            
+            $dayType = $date->isWeekend() ? 'weekend' : 'weekday';
+            $exists = PriceSetting::where('field_id', $this->field->id)
+                ->where('day_type', $dayType)
+                ->where('start_time', '<=', $slot . ':00')
+                ->where('end_time', '>', $slot . ':00')
+                ->exists();
+            if (!$exists) return false;
+        }
+        return true;
+    }
+
     public function calculateTotalPrice()
     {
-        if (!$this->selectedTime || !$this->duration) {
+        if (!$this->selectedTime) {
             $this->totalPrice = 0;
             return;
         }
@@ -85,75 +172,6 @@ class BookingCalendar extends Component
         return $total;
     }
 
-    public function loadAvailableSlots()
-    {
-        $this->availableSlots = [];
-        $date = Carbon::parse($this->selectedDate);
-        $dayType = $date->isWeekend() ? 'weekend' : 'weekday';
-
-        $settings = PriceSetting::where('field_id', $this->field->id)
-            ->where('day_type', $dayType)
-            ->get();
-
-        $bookings = Booking::where('field_id', $this->field->id)
-            ->whereDate('start_time', $this->selectedDate)
-            ->whereIn('status', ['confirmed', 'pending_verification'])
-            ->get();
-
-        $allBookedSlots = [];
-        foreach ($bookings as $booking) {
-            $start = Carbon::parse($booking->start_time);
-            $end = Carbon::parse($booking->end_time);
-            while ($start < $end) {
-                $allBookedSlots[] = $start->format('H:i');
-                $start->addHour();
-            }
-        }
-
-        foreach ($settings as $setting) {
-            $start = Carbon::parse($setting->start_time);
-            $end = Carbon::parse($setting->end_time);
-
-            if ($date->isToday()) {
-                $nowLimit = now()->addMinutes(15)->ceilHour(); 
-                if ($start->lt($nowLimit)) $start = $nowLimit;
-            }
-
-            while ($start < $end) {
-                $slotTime = $start->format('H:i');
-                if ($this->isSlotAvailableForDuration($slotTime, $date, $allBookedSlots)) {
-                    $this->availableSlots[] = ['time' => $slotTime];
-                }
-                $start->addHour();
-            }
-        }
-
-        $this->availableSlots = array_values(collect($this->availableSlots)->unique('time')->sortBy('time')->toArray());
-
-        if (!empty($this->availableSlots) && (empty($this->selectedTime) || !collect($this->availableSlots)->contains('time', $this->selectedTime))) {
-            $this->selectedTime = $this->availableSlots[0]['time'];
-            $this->calculateTotalPrice();
-        }
-    }
-
-    protected function isSlotAvailableForDuration($startTime, $date, $bookedSlots): bool
-    {
-        $checkTime = Carbon::parse($date->toDateString() . ' ' . $startTime);
-        for ($i = 0; $i < (int)$this->duration; $i++) {
-            $slot = $checkTime->copy()->addHours($i)->format('H:i');
-            if (in_array($slot, $bookedSlots)) return false;
-            
-            $dayType = $date->isWeekend() ? 'weekend' : 'weekday';
-            $exists = PriceSetting::where('field_id', $this->field->id)
-                ->where('day_type', $dayType)
-                ->where('start_time', '<=', $slot . ':00')
-                ->where('end_time', '>', $slot . ':00')
-                ->exists();
-            if (!$exists) return false;
-        }
-        return true;
-    }
-
     public function createBooking()
     {
         $this->validate();
@@ -162,13 +180,12 @@ class BookingCalendar extends Component
         $startTime = Carbon::parse($this->selectedDate . ' ' . $this->selectedTime);
         $endTime = $startTime->copy()->addHours((int)$this->duration);
 
-        // Keamanan 1: Anti-Jam-Lewat
-        if ($startTime->lt(now()->addMinutes(10))) {
-            session()->flash('error', 'Waktu sudah terlewat, silakan pilih jam lain.');
+        if ($startTime->lt(now()->addMinutes(5))) {
+            session()->flash('error', 'Waktu sudah terlewat Bos, pilih jadwal lain!');
+            $this->loadAvailableSlots();
             return;
         }
 
-        // Keamanan 2: Anti-Bentrok
         $isBooked = Booking::where('field_id', $this->field->id)
             ->where(function ($query) use ($startTime, $endTime) {
                 $query->where('start_time', '<', $endTime)
@@ -178,17 +195,12 @@ class BookingCalendar extends Component
             ->exists();
 
         if ($isBooked) {
-            session()->flash('error', 'Slot sudah dipesan orang lain.');
+            session()->flash('error', 'Slot ini baru saja dipesan orang lain!');
             $this->loadAvailableSlots();
             return;
         }
 
-        // Keamanan 3: Hitung ulang harga
         $finalPrice = $this->calculatePricePerDuration($this->field->id, $startTime, (int)$this->duration);
-        if (!$finalPrice) {
-            session()->flash('error', 'Harga tidak tersedia.');
-            return;
-        }
 
         $booking = Booking::create([
             'user_id' => Auth::id(),

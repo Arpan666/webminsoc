@@ -16,8 +16,8 @@
                 </div>
 
                 <h1 class="text-5xl md:text-8xl font-extrabold uppercase leading-[1.1] mb-6 drop-shadow-2xl">
-                    Cahaya Sorot <span class="text-accent-gold italic">nyala</span>,<br> 
-                    <span class="text-white/90 text-4xl md:text-6xl">Kamu yang jadi pusat permainan.</span>
+                    Cahaya Sorot <span class="text-accent-gold italic">nyala</span><br> 
+                    <span class="text-white/90 text-4xl md:text-6xl">Kamu yang jadi pusat permainan</span>
                 </h1>
                 
                 <p class="text-gray-400 text-lg md:text-xl mb-10 tracking-wide max-w-2xl mx-auto leading-relaxed italic">
