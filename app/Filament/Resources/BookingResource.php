@@ -4,12 +4,13 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\BookingResource\Pages;
 use App\Models\Booking;
-use App\Models\PriceSetting;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TimePicker;
@@ -18,136 +19,165 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class BookingResource extends Resource
 {
     protected static ?string $model = Booking::class;
-    protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
+    protected static ?string $navigationIcon = 'heroicon-o-calendar';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Section::make('Detail Pesanan')
+                Group::make()
                     ->schema([
-                        Select::make('user_id')
-                            ->relationship('user', 'name')
-                            ->label('Pelanggan')
-                            ->required()
-                            ->searchable()
-                            ->preload(),
+                        Section::make('Detail Booking')
+                            ->schema([
+                                Select::make('user_id')
+                                    ->relationship('user', 'name')
+                                    ->required()
+                                    ->disabled(fn ($record) => $record !== null)
+                                    ->columnSpan(1),
+                                
+                                Select::make('field_id')
+                                    ->relationship('field', 'name')
+                                    ->required()
+                                    ->live()
+                                    ->disabled(fn ($record) => $record !== null)
+                                    ->afterStateUpdated(fn (Set $set, Get $get) => self::updateTotalPrice($set, $get))
+                                    ->columnSpan(1),
 
-                        Select::make('field_id')
-                            ->relationship('field', 'name')
-                            ->label('Lapangan')
-                            ->required()
-                            ->live()
-                            ->afterStateUpdated(fn (Get $get, Set $set) => self::updateTotalPrice($get, $set)),
+                                DatePicker::make('start_time')
+                                    ->label('Tanggal Booking')
+                                    ->required()
+                                    ->native(false)
+                                    ->live()
+                                    ->minDate(now()->startOfDay()) 
+                                    ->disabled(fn ($record) => $record !== null)
+                                    ->afterStateUpdated(fn (Set $set, Get $get) => self::updateTotalPrice($set, $get))
+                                    ->columnSpan(1),
 
-                        DatePicker::make('booking_date')
-                            ->label('Tanggal')
-                            ->required()
-                            ->native(false)
-                            ->minDate(now()->startOfDay())
-                            ->live()
-                            ->afterStateUpdated(fn (Get $get, Set $set) => self::updateTotalPrice($get, $set)),
-
-                        TimePicker::make('booking_time')
-                            ->label('Jam Mulai')
-                            ->required()
-                            ->native(false)
-                            ->live()
-                            ->rules([
-                                fn (Get $get): \Closure => function (string $attribute, $value, \Closure $fail) use ($get) {
-                                    $dateRaw = $get('booking_date');
-                                    $fieldId = $get('field_id');
-                                    $duration = (int) ($get('duration') ?? 1);
-                                    
-                                    if (!$dateRaw || !$fieldId || !$value) return;
-
-                                    try {
-                                        $d = Carbon::parse($dateRaw)->format('Y-m-d');
-                                        $t = Carbon::parse($value)->format('H:i:s');
-                                        $start = Carbon::parse($d . ' ' . $t);
-                                        $end = $start->copy()->addHours($duration);
-
-                                        if ($start->isPast()) {
-                                            $fail('Jam sudah lewat, Bos!');
-                                            return;
+                                TimePicker::make('start_time_display')
+                                    ->label('Jam Mulai')
+                                    ->format('H:i')
+                                    ->required()
+                                    ->live()
+                                    ->disabled(fn ($record) => $record !== null)
+                                    ->dehydrated(true)
+                                    ->afterStateHydrated(function ($component, $record) {
+                                        if ($record && $record->start_time) {
+                                            $component->state($record->start_time->format('H:i'));
                                         }
+                                    })
+                                    ->columnSpan(1),
 
-                                        $isBooked = Booking::where('field_id', $fieldId)
-                                            ->whereIn('status', ['confirmed', 'pending_verification'])
-                                            ->where(function ($q) use ($start, $end) {
-                                                $q->where('start_time', '<', $end)
-                                                  ->where('end_time', '>', $start);
-                                            })
-                                            ->when($get('id'), fn($q, $id) => $q->where('id', '!=', $id))
-                                            ->exists();
+Select::make('duration')
+    ->label('Durasi (Jam)')
+    ->options([
+        1 => '1 Jam',
+        2 => '2 Jam',
+        3 => '3 Jam',
+        4 => '4 Jam',
+    ])
+    ->default(1)
+    ->required()
+    ->live()
+    ->dehydrated(false) // Ubah ke false karena kita tidak punya kolom 'duration' di DB
+    ->disabled(fn ($record) => $record !== null)
+    // TAMBAHKAN INI: Agar saat edit, durasi terisi otomatis
+    ->afterStateHydrated(function (Set $set, $record) {
+        if ($record && $record->start_time && $record->end_time) {
+            $set('duration', $record->start_time->diffInHours($record->end_time));
+        }
+    })
+    ->afterStateUpdated(fn (Set $set, Get $get) => self::updateTotalPrice($set, $get))
+    ->columnSpan(1),
 
-                                        if ($isBooked) $fail('Jadwal bentrok! Lapangan sudah dipesan.');
-                                    } catch (\Exception $e) { return; }
-                                },
+                                TextInput::make('total_price')
+                                    ->numeric()
+                                    ->prefix('Rp')
+                                    ->required()
+                                    ->readOnly()
+                                    ->columnSpan(1),
+
+                            ])->columns(2),
+
+                        Section::make('Status & Catatan Admin')
+                            ->schema([
+                                Select::make('status')
+                                    ->options([
+                                        'pending_verification' => 'Menunggu Verifikasi',
+                                        'confirmed' => 'Dikonfirmasi',
+                                        'rejected' => 'Ditolak',
+                                        'cancelled' => 'Dibatalkan',
+                                        'completed' => 'Selesai',
+                                    ])->required(),
+                                Textarea::make('admin_notes')->label('Catatan Admin')->rows(3),
                             ]),
+                    ])->columnSpan(2),
 
-                        Select::make('duration')
-                            ->label('Durasi')
-                            ->options([1 => '1 Jam', 2 => '2 Jam', 3 => '3 Jam'])
-                            ->default(1)
-                            ->required()
-                            ->live()
-                            ->afterStateUpdated(fn (Get $get, Set $set) => self::updateTotalPrice($get, $set)),
-
-                        TextInput::make('total_price')
-                            ->label('Total Harga')
-                            ->prefix('Rp')
-                            ->readonly()
-                            ->required(),
-
-                        Select::make('status')
-                            ->options([
-                                'pending_verification' => 'Pending',
-                                'confirmed' => 'Lunas',
-                                'cancelled' => 'Batal',
-                            ])->default('confirmed')->required(),
-                    ])->columns(2),
-            ]);
+                Group::make()
+                    ->schema([
+                        Section::make('Bukti Pembayaran')
+                            ->schema([
+                                FileUpload::make('payment_proof_path')
+                                    ->label('Bukti Pembayaran')
+                                    ->visible(fn ($record) => filled($record?->payment_proof_path))
+                                    ->disabled()
+                                    ->columnSpan('full'),
+                            ]),
+                    ])->columnSpan(1),
+            ])->columns(3);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user.name')->label('User')->sortable(),
-                Tables\Columns\TextColumn::make('field.name')->label('Lapangan')->badge(),
-                Tables\Columns\TextColumn::make('start_time')->label('Mulai')->dateTime('d M H:i'),
-                Tables\Columns\TextColumn::make('total_price')->label('Total')->money('IDR'),
-                Tables\Columns\TextColumn::make('status')->badge()
+                Tables\Columns\TextColumn::make('user.name')->label('Pelanggan')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('field.name')->label('Lapangan')->sortable(),
+                Tables\Columns\TextColumn::make('start_time')->label('Mulai')->dateTime('d/m/Y H:i')->sortable(),
+                Tables\Columns\TextColumn::make('end_time')->label('Selesai')->dateTime('H:i')->sortable(),
+                Tables\Columns\TextColumn::make('total_price')->label('Total')->money('IDR')->sortable(),
+                Tables\Columns\TextColumn::make('status')
+                    ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'confirmed' => 'success',
                         'pending_verification' => 'warning',
-                        default => 'danger',
+                        'rejected' => 'danger',
+                        default => 'gray',
                     }),
             ])
-            ->defaultSort('start_time', 'desc')
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+                ])
+
+            ->bulkActions([
+            Tables\Actions\BulkActionGroup::make([
+                Tables\Actions\DeleteBulkAction::make(),
+            ])
             ]);
     }
 
-    protected static function updateTotalPrice(Get $get, Set $set): void
+    public static function updateTotalPrice(Set $set, Get $get)
     {
         $fieldId = $get('field_id');
-        $date = $get('booking_date');
-        $duration = (int) $get('duration');
+        $date = $get('start_time');
+        $duration = (int) $get('duration') ?: 1;
 
         if ($fieldId && $date) {
-            $isWeekend = Carbon::parse($date)->isWeekend();
-            $price = PriceSetting::where('field_id', $fieldId)
-                ->where('day_type', $isWeekend ? 'weekend' : 'weekday')
-                ->first()?->price_per_hour ?? 0;
-            $set('total_price', $price * $duration);
+            $carbonDate = Carbon::parse($date);
+            $dayType = ($carbonDate->isWeekend()) ? 'weekend' : 'weekday';
+
+            $priceSetting = DB::table('price_settings')
+                ->where('field_id', $fieldId)
+                ->where('day_type', $dayType)
+                ->first();
+
+            $pricePerHour = $priceSetting ? $priceSetting->price_per_hour : 0;
+            $set('total_price', $pricePerHour * $duration);
         }
     }
 

@@ -11,15 +11,18 @@
 
 <nav x-data="{ open: false, atTop: true }" 
      @scroll.window="atTop = (window.pageYOffset > 40 ? false : true)"
-     :class="{ 'bg-dark-card/95 backdrop-blur-md shadow-2xl border-white/10': !atTop, 'bg-transparent border-transparent': atTop }"
-     class="fixed top-0 w-full z-50 transition-all duration-500 border-b">
+     {{-- PERBAIKAN: Memberikan background gelap tipis saat di top agar tidak ketimpa foto --}}
+     :class="{ 
+        'bg-dark-card/95 backdrop-blur-md shadow-2xl border-white/10': !atTop, 
+        'bg-black/40 backdrop-blur-sm border-transparent': atTop 
+     }"
+     class="fixed top-0 w-full z-[9999] transition-all duration-500 border-b">
     
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-20">
             
             {{-- Bagian Kiri: Logo & Navigasi Desktop --}}
-            {{-- Ganti bagian Brand Logo di navigation.blade.php dengan ini --}}
-            <div class="flex items-center shrink-0"> {{-- Tambahkan shrink-0 --}}
+            <div class="flex items-center shrink-0">
                 <a href="{{ $homeRoute }}" class="flex items-center">
                     <span class="text-xl md:text-2xl font-black text-accent-gold tracking-tighter uppercase">
                         F9<span class="text-white">MINI</span>SOCCER
@@ -57,10 +60,8 @@
                         </x-slot>
 
                         <x-slot name="content">
-                            {{-- Container Dropdown yang di-custom agar hitam pekat --}}
                             <div class="bg-dark-card border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden p-1.5 min-w-[200px]">
                                 
-                                {{-- Link Profile --}}
                                 <x-dropdown-link :href="route('profile.edit')" 
                                     class="!flex items-center w-full px-4 py-3 text-[11px] font-bold uppercase tracking-widest !text-white hover:!bg-accent-gold hover:!text-dark-bg rounded-xl transition-all duration-200 border-none">
                                     <svg class="w-4 h-4 me-3 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -69,7 +70,6 @@
                                     {{ __('Profile') }}
                                 </x-dropdown-link>
                                 
-                                {{-- Link Riwayat Booking --}}
                                 <x-dropdown-link :href="$myBookingsRoute" 
                                     class="!flex items-center w-full px-4 py-3 text-[11px] font-bold uppercase tracking-widest !text-white hover:!bg-accent-gold hover:!text-dark-bg rounded-xl transition-all duration-200 border-none mt-1">
                                     <svg class="w-4 h-4 me-3 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -78,10 +78,8 @@
                                     {{ __('Riwayat Booking') }}
                                 </x-dropdown-link>
 
-                                {{-- Garis Pemisah --}}
                                 <div class="border-t border-white/5 my-1.5 mx-2"></div>
 
-                                {{-- Form Logout --}}
                                 <form method="POST" action="{{ route('logout') }}" class="m-0">
                                     @csrf
                                     <x-dropdown-link :href="route('logout')" 
@@ -135,13 +133,12 @@
 
 <style>
     .nav-link {
-        @apply relative inline-flex items-center px-1 pt-1 text-[11px] font-bold uppercase tracking-widest text-white/70 hover:text-accent-gold transition-all duration-300;
+        @apply relative inline-flex items-center px-1 pt-1 text-[11px] font-bold uppercase tracking-widest text-white hover:text-accent-gold transition-all duration-300;
         text-decoration: none !important;
     }
 
-    /* Memastikan garis bawah tidak mengandung teks */
     .nav-link::after {
-        content: ""; /* HARUS KOSONG */
+        content: "";
         @apply absolute bottom-0 left-0 w-0 h-[2px] bg-accent-gold transition-all duration-300;
     }
 
@@ -149,8 +146,8 @@
         @apply w-full;
     }
 
-    /* Mencegah tabrakan dengan header page */
+    /* Memaksa navbar berada di layer paling atas */
     nav {
-        box-sizing: border-box;
+        z-index: 9999 !important;
     }
 </style>

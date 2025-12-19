@@ -22,4 +22,17 @@ class PaymentController extends Controller
         // Tampilkan view yang berisi detail booking dan komponen Livewire uploader
         return view('payment.show', compact('booking'));
     }
+
+    public function printTicket(Booking $booking)
+    {
+        // Pastikan hanya pemilik atau admin
+        if (auth()->id() !== $booking->user_id && auth()->user()->role !== 'admin') {
+            abort(403);
+        }
+
+        // Load relasi agar data tidak null saat di-print
+        $booking->load(['user', 'field']);
+
+        return view('payment.print', compact('booking'));
+    }
 }

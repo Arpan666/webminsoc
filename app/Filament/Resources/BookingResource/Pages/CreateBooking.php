@@ -5,6 +5,7 @@ namespace App\Filament\Resources\BookingResource\Pages;
 use App\Filament\Resources\BookingResource;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\Model;
 
 class CreateBooking extends CreateRecord
 {
@@ -12,14 +13,37 @@ class CreateBooking extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        if (isset($data['booking_date']) && isset($data['booking_time'])) {
-            $d = Carbon::parse($data['booking_date'])->format('Y-m-d');
-            $t = Carbon::parse($data['booking_time'])->format('H:i:s');
-            $start = Carbon::parse($d . ' ' . $t);
+        // Ambil input pembantu
+        $startTime = $data['start_time'] ?? null;
+        $timeDisplay = $data['start_time_display'] ?? '00:00';
+        $duration = (int) ($data['duration'] ?? 1);
+
+        if ($startTime) {
+            // Bersihkan tanggal dan gabungkan dengan jam
+            $justDate = date('Y-m-d', strtotime($startTime));
+            $start = Carbon::parse($justDate . ' ' . $timeDisplay);
             
-            $data['start_time'] = $start;
-            $data['end_time'] = $start->copy()->addHours((int)$data['duration']);
+            // Set kolom asli database
+            $data['start_time'] = $start->format('Y-m-d H:i:s');
+            $data['end_time'] = (clone $start)->addHours($duration)->format('Y-m-d H:i:s');
         }
+
         return $data;
+    }
+
+    protected function handleRecordCreation(array $data): Model
+    {
+        // Buang field yang bukan kolom database agar tidak Error 1054
+        $duration = $data['duration'] ?? null;
+        unset($data['duration']);
+        unset($data['start_time_display']);
+
+        // Paksa simpan menggunakan model
+        return static::getModel()::create($data);
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
     }
 }

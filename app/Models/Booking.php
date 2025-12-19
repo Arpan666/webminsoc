@@ -2,40 +2,43 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Booking extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'user_id',
         'field_id',
         'start_time',
         'end_time',
         'total_price',
-        'payment_method',
         'status',
-        'admin_notes',     
+        'admin_notes',
         'payment_proof_path',
     ];
-
 
     protected $casts = [
         'start_time' => 'datetime',
         'end_time' => 'datetime',
     ];
 
-    // Relasi ke User
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    // Relasi ke Field
-    public function field()
+    public function field(): BelongsTo
     {
         return $this->belongsTo(Field::class);
+    }
+
+    // Tambahkan fungsi ini di dalam class Booking
+    public function getDurationAttribute()
+    {
+        if ($this->start_time && $this->end_time) {
+            return $this->start_time->diffInHours($this->end_time);
+        }
+        return 1;
     }
 }

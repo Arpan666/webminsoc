@@ -8,6 +8,7 @@ use App\Models\Booking;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\CustomerBookingController;
+use App\Http\Controllers\BookingReportController; // Tambahkan ini
 
 // ------------------
 // ROUTE APLIKASI UTAMA
@@ -46,15 +47,22 @@ Route::middleware(['auth'])->group(function () {
         ->middleware('verified')
         ->name('payment.store');
 
-    // ROUTE BARU UNTUK RIWAYAT BOOKING
+    // ROUTE RIWAYAT BOOKING
     Route::get('/my-bookings', [CustomerBookingController::class, 'index'])->name('my-bookings.index');
+
+    // --- ROUTE CETAK LAPORAN (BARU) ---
+    Route::get('/admin/bookings/report/print', [BookingReportController::class, 'print'])
+        ->name('bookings.report.print');
+
+        // --- ROUTE CETAK TICKET ---
+    Route::get('/booking/{booking}/print', [App\Http\Controllers\PaymentController::class, 'printTicket'])->name('booking.print');
 });
 
 // Route untuk halaman sukses
 Route::get('/booking/success', [BookingController::class, 'success'])->name('booking.success')->middleware('auth');
 
 // ------------------
-// ROUTE AUTH DEFAULT (Breeze / Jetstream / Fortify)
+// ROUTE AUTH DEFAULT
 // ------------------
 
 require __DIR__.'/auth.php';
