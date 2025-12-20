@@ -1,68 +1,63 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FieldController;
-use App\Models\Booking;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\CustomerBookingController;
-use App\Http\Controllers\BookingReportController; // Tambahkan ini
+use App\Http\Controllers\BookingReportController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\LocationController;
+use App\Http\Controllers\AboutController;
 
-// ------------------
-// ROUTE APLIKASI UTAMA
-// ------------------
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
 
-// Halaman utama (daftar lapangan)
+// --- HALAMAN PUBLIK (Bisa diakses tanpa login) ---
 Route::get('/', [FieldController::class, 'index'])->name('welcome');
-
-// routes/web.php
-Route::get('/contact', [App\Http\Controllers\ContactController::class, 'index'])->name('contact-us');
-
-// Detail lapangan
 Route::get('/lapangan/{field}', [FieldController::class, 'show'])->name('field.detail');
+Route::get('/location', [LocationController::class, 'index'])->name('location');
+Route::get('/about', [AboutController::class, 'index'])->name('about-us');
 
-Route::get('/location', [App\Http\Controllers\LocationController::class, 'index'])->name('location');
+// --- FITUR KONTAK (Logika Terpisah & AJAX) ---
+Route::controller(ContactController::class)->group(function () {
+    Route::get('/contact', 'index')->name('contact.index');
+    Route::post('/contact/send', 'sendMessage')->name('contact.send');
+});
 
-Route::get('/about', [App\Http\Controllers\AboutController::class, 'index'])->name('about-us');
-
-// ------------------
-// ROUTE USER LOGIN
-// ------------------
-
+// --- HALAMAN PROTECTED (Wajib Login) ---
 Route::middleware(['auth'])->group(function () {
-    // Profile
+    
+    // Manajemen Profil User
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // Proses Booking
     Route::post('/booking/process', [BookingController::class, 'process'])->name('booking.process');
+    Route::get('/booking/success', [BookingController::class, 'success'])->name('booking.success');
 
-    Route::get('/booking/{booking}/payment', [PaymentController::class, 'show'])
-        ->middleware('verified')
-        ->name('payment.show');
+    // Pembayaran & Tiket (Wajib Verified Email jika ada)
+    Route::middleware('verified')->group(function () {
+        Route::get('/booking/{booking}/payment', [PaymentController::class, 'show'])->name('payment.show');
+        Route::post('/booking/{booking}/payment', [PaymentController::class, 'store'])->name('payment.store');
+        Route::get('/booking/{booking}/print', [PaymentController::class, 'printTicket'])->name('booking.print');
+    });
 
-    Route::post('/booking/{booking}/payment', [PaymentController::class, 'store'])
-        ->middleware('verified')
-        ->name('payment.store');
-
-    // ROUTE RIWAYAT BOOKING
+    // Riwayat Booking Customer
     Route::get('/my-bookings', [CustomerBookingController::class, 'index'])->name('my-bookings.index');
 
-    // --- ROUTE CETAK LAPORAN (BARU) ---
-    Route::get('/admin/bookings/report/print', [BookingReportController::class, 'print'])
-        ->name('bookings.report.print');
+    // Laporan Admin (Cetak Laporan)
+    Route::get('/admin/bookings/report/print', [BookingReportController::class, 'print'])->name('bookings.report.print');
 
-        // --- ROUTE CETAK TICKET ---
-    Route::get('/booking/{booking}/print', [App\Http\Controllers\PaymentController::class, 'printTicket'])->name('booking.print');
+    // Inbox Admin (Pesan Kontak)
+    Route::get('/admin/inbox', [ContactController::class, 'adminIndex'])->name('admin.inbox');
+    Route::delete('/admin/inbox/{contact}', [ContactController::class, 'destroy'])->name('admin.inbox.delete');
 });
 
-// Route untuk halaman sukses
-Route::get('/booking/success', [BookingController::class, 'success'])->name('booking.success')->middleware('auth');
-
-// ------------------
-// ROUTE AUTH DEFAULT
-// ------------------
-
+// --- AUTHENTICATION ROUTES (Breeze/Jetstream) ---
 require __DIR__.'/auth.php';

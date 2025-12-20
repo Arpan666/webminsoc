@@ -75,7 +75,7 @@
                         </p>
                         
                         <div class="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-                            <a href="{{ route('contact-us') ?? '#' }}" 
+                            <a href="{{ route('contact.index') ?? '#' }}" 
                                class="w-full sm:w-auto px-8 py-4 bg-accent-gold text-dark-bg rounded-2xl font-black uppercase text-[11px] tracking-[0.2em] hover:scale-105 hover:shadow-[0_10px_30px_rgba(212,175,55,0.3)] transition-all duration-300">
                                 Hubungi Tim Kami
                             </a>
