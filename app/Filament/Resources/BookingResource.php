@@ -72,27 +72,26 @@ class BookingResource extends Resource
                                     })
                                     ->columnSpan(1),
 
-Select::make('duration')
-    ->label('Durasi (Jam)')
-    ->options([
-        1 => '1 Jam',
-        2 => '2 Jam',
-        3 => '3 Jam',
-        4 => '4 Jam',
-    ])
-    ->default(1)
-    ->required()
-    ->live()
-    ->dehydrated(false) // Ubah ke false karena kita tidak punya kolom 'duration' di DB
-    ->disabled(fn ($record) => $record !== null)
-    // TAMBAHKAN INI: Agar saat edit, durasi terisi otomatis
-    ->afterStateHydrated(function (Set $set, $record) {
-        if ($record && $record->start_time && $record->end_time) {
-            $set('duration', $record->start_time->diffInHours($record->end_time));
-        }
-    })
-    ->afterStateUpdated(fn (Set $set, Get $get) => self::updateTotalPrice($set, $get))
-    ->columnSpan(1),
+                                Select::make('duration')
+                                    ->label('Durasi (Jam)')
+                                    ->options([
+                                        1 => '1 Jam',
+                                        2 => '2 Jam',
+                                        3 => '3 Jam',
+                                        4 => '4 Jam',
+                                    ])
+                                    ->default(1)
+                                    ->required()
+                                    ->live()
+                                    ->dehydrated(false)
+                                    ->disabled(fn ($record) => $record !== null)
+                                    ->afterStateHydrated(function (Set $set, $record) {
+                                        if ($record && $record->start_time && $record->end_time) {
+                                            $set('duration', $record->start_time->diffInHours($record->end_time));
+                                        }
+                                    })
+                                    ->afterStateUpdated(fn (Set $set, Get $get) => self::updateTotalPrice($set, $get))
+                                    ->columnSpan(1),
 
                                 TextInput::make('total_price')
                                     ->numeric()
@@ -133,6 +132,12 @@ Select::make('duration')
 
     public static function table(Table $table): Table
     {
+        // LOGIKA AUTO-UPDATE STATUS
+        // Mencari booking yang sudah melewati end_time untuk diubah statusnya
+        Booking::where('status', 'confirmed')
+            ->where('end_time', '<', now())
+            ->update(['status' => 'completed']);
+
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')->label('Pelanggan')->sortable()->searchable(),
@@ -146,18 +151,26 @@ Select::make('duration')
                         'confirmed' => 'success',
                         'pending_verification' => 'warning',
                         'rejected' => 'danger',
+                        'completed' => 'gray',
                         default => 'gray',
+                    })
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'completed' => 'Selesai digunakan',
+                        'confirmed' => 'Dikonfirmasi',
+                        'pending_verification' => 'Menunggu Verifikasi',
+                        'rejected' => 'Ditolak',
+                        'cancelled' => 'Dibatalkan',
+                        default => $state,
                     }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-                ])
-
-            ->bulkActions([
-            Tables\Actions\BulkActionGroup::make([
-                Tables\Actions\DeleteBulkAction::make(),
             ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ])
             ]);
     }
 

@@ -36,6 +36,7 @@
                                 'waiting_confirmation' => ['label'=>'Menunggu Konfirmasi','color'=>'text-accent-gold','bg'=>'bg-accent-gold/10','border'=>'border-accent-gold/20'],
                                 'rejected' => ['label'=>'Ditolak','color'=>'text-red-500','bg'=>'bg-red-500/10','border'=>'border-red-500/20'],
                                 'cancelled' => ['label'=>'Dibatalkan','color'=>'text-gray-500','bg'=>'bg-white/5','border'=>'border-white/10'],
+                                'completed' => ['label'=>'Selesai digunakan','color'=>'text-blue-400','bg'=>'bg-blue-400/10','border'=>'border-blue-400/20'],
                             ];
                             $status = $statusConfig[$booking->status] ?? ['label'=>'Unknown','color'=>'text-gray-500','bg'=>'bg-white/5','border'=>'border-white/10'];
                         @endphp
