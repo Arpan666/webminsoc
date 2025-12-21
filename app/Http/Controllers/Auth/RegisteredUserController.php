@@ -46,6 +46,6 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         // FIX: Jangan pakai dashboard karena route-nya tidak ada
-        return redirect()->route('home'); // / adalah halaman utama
+        return redirect()->route('welcome'); // / adalah halaman utama
     }
 }
