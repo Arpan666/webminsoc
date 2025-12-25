@@ -23,7 +23,7 @@ class BookingReportController extends Controller
                 Carbon::parse($start)->startOfDay(), 
                 Carbon::parse($end)->endOfDay()
             ])
-            ->where('status', 'confirmed')
+            ->whereIn('status', ['confirmed', 'completed'])
             ->with(['user', 'field'])
             ->get();
 

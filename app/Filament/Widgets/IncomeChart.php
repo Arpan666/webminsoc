@@ -18,7 +18,7 @@ class IncomeChart extends ChartWidget
         $labels = [];
         for ($i = 6; $i >= 0; $i--) {
             $date = now()->subDays($i);
-            $sum = Booking::where('status', 'confirmed')
+            $sum = Booking::whereIn('status', ['completed', 'confirmed'])
                 ->whereDate('start_time', $date)
                 ->sum('total_price');
             $data[] = $sum;

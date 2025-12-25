@@ -1,91 +1,101 @@
-<x-app-layout>
-    <div class="container mx-auto px-4 py-8 pt-24 bg-dark-bg">
-        <h1 class="text-4xl font-extrabold text-white mb-8 uppercase border-b border-accent-gold/50 pb-3">
-            DETAIL LAPANGAN: <span class="text-accent-gold">{{ $field->name }}</span>
-        </h1>
-        
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    {{-- Bagian Kanan: Form Booking (Sticky) --}}
+    {{-- Pastikan div ini dibungkus sesuai struktur grid di halaman detail lapangan Bos --}}
+    
+    <div class="lg:col-start-3">
+        <div class="sticky top-24 bg-dark-card p-6 rounded-[2rem] shadow-2xl border border-white/5 relative overflow-hidden">
+            {{-- Dekorasi Glow --}}
+            <div class="absolute -top-24 -right-24 w-48 h-48 bg-accent-gold/10 rounded-full blur-[80px]"></div>
             
-            {{-- Bagian Kiri: Gambar dan Deskripsi --}}
-            <div class="lg:col-span-2 space-y-8">
-                
-                {{-- Card Gambar Utama --}}
-                <div class="bg-dark-card rounded-xl shadow-xl overflow-hidden border border-accent-gold/20">
-                    @if ($field->image_path)
-                        <img src="{{ asset('storage/' . $field->image_path) }}" 
-                             alt="Gambar Utama Lapangan {{ $field->name }}" 
-                             class="w-full h-96 object-cover">
-                    @else
-                        <div class="w-full h-96 bg-gray-800 flex items-center justify-center">
-                            <span class="text-gray-500 text-xl">Foto Lapangan Utama Belum Tersedia</span>
-                        </div>
-                    @endif
-                </div>
+            <div class="relative z-10">
+                <h2 class="text-2xl font-black text-white uppercase tracking-tighter mb-1">Pesan <span class="text-accent-gold">Lapangan</span></h2>
+                <p class="text-[10px] text-gray-500 font-bold uppercase tracking-[0.2em] mb-6">Sistem Reservasi Otomatis</p>
 
-                {{-- Card Deskripsi --}}
-                <div class="bg-dark-card p-6 rounded-xl shadow-lg border border-gray-700">
-                    <h2 class="text-2xl font-bold text-accent-gold mb-3 border-b border-gray-700 pb-2">Deskripsi Lapangan</h2>
-                    <p class="text-gray-300 leading-relaxed">
-                        {{ $field->description ?? 'Masukkan deskripsi rinci tentang jenis rumput, fasilitas, dan keunggulan lapangan.' }}
-                    </p>
-                </div>
-                
-                {{-- Card Lokasi & Fasilitas --}}
-                <div class="bg-dark-card p-6 rounded-xl shadow-lg border border-gray-700">
-                    <h2 class="text-2xl font-bold text-accent-gold mb-3 border-b border-gray-700 pb-2">Lokasi & Fasilitas</h2>
-                    <div class="grid grid-cols-2 gap-4 text-gray-300">
-                        <p><span class="font-semibold text-white">Alamat:</span> {{ $field->address ?? 'Belum ada data' }}</p>
-                        <p><span class="font-semibold text-white">Kota:</span> {{ $field->city ?? 'Belum ada data' }}</p>
+                <div class="space-y-5">
+                    {{-- Input Tanggal --}}
+                    <div>
+                        <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Tanggal Main</label>
+                        <div class="relative">
+                            <input type="date" wire:model.live="selectedDate" 
+                                class="w-full bg-gray-900/50 border-white/5 rounded-xl text-sm text-white focus:ring-accent-gold focus:border-accent-gold transition-all py-3 px-4">
+                        </div>
                     </div>
-                </div>
 
-            </div>
+                    {{-- Input Durasi --}}
+                    <div>
+                        <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Durasi Sewa</label>
+                        <select wire:model.live="duration" 
+                            class="w-full bg-gray-900/50 border-white/5 rounded-xl text-sm text-white focus:ring-accent-gold focus:border-accent-gold transition-all py-3 px-4">
+                            <option value="1">1 Jam (Standar)</option>
+                            <option value="2">2 Jam (Rekomendasi)</option>
+                            <option value="3">3 Jam (Pro)</option>
+                            <option value="4">4 Jam</option>
+                        </select>
+                    </div>
 
-            {{-- Bagian Kanan: Form Booking (Sticky) --}}
-            <div class="lg:col-span-1">
-                {{-- Card Form Gold Accent --}}
-                <div class="sticky top-24 bg-dark-card p-6 rounded-xl shadow-2xl border-t-4 border-accent-gold/80">
-                    <h2 class="text-2xl font-extrabold text-accent-gold mb-5">Pesan Sekarang</h2>
-                    
-                    <form action="{{ route('booking.process') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="field_id" value="{{ $field->id }}">
+                    {{-- Slot Waktu --}}
+                    <div>
+                        <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Pilih Jam Mulai</label>
+                        @if(empty($availableSlots))
+                            <div class="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-center">
+                                <p class="text-red-500 text-[10px] font-bold uppercase">Maaf, Tidak Ada Slot Tersedia</p>
+                            </div>
+                        @else
+                            <div class="grid grid-cols-3 gap-2">
+                                @foreach($availableSlots as $slot)
+                                    <button wire:click="selectSlot('{{ $slot['time'] }}')"
+                                        class="py-3 text-[11px] font-black rounded-xl border transition-all duration-300 {{ $selectedTime == $slot['time'] ? 'bg-accent-gold border-accent-gold text-dark-bg shadow-[0_10px_20px_rgba(212,175,55,0.2)]' : 'bg-white/5 border-white/5 text-gray-400 hover:border-accent-gold/50' }}">
+                                        {{ $slot['time'] }}
+                                    </button>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
 
-                        <div class="mb-4">
-                            <label for="date" class="block text-sm font-medium text-gray-300">Pilih Tanggal</label>
-                            {{-- Input Dark Mode dengan focus Gold --}}
-                            <input type="date" name="date" id="date" value="{{ date('Y-m-d') }}" 
-                                class="mt-1 block w-full rounded-md bg-gray-800 border-gray-600 text-white shadow-sm focus:border-accent-gold focus:ring-accent-gold">
+                    {{-- Ringkasan Harga --}}
+                    <div class="mt-8 pt-6 border-t border-white/5">
+                        <div class="flex justify-between items-end mb-6">
+                            <div>
+                                <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Total Pembayaran</p>
+                                <div class="flex items-baseline gap-1">
+                                    <span class="text-accent-gold font-bold text-sm">IDR</span>
+                                    <span class="text-white font-black text-3xl tracking-tighter">
+                                        {{ number_format($totalPrice, 0, ',', '.') }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-[9px] text-gray-600 font-bold uppercase italic">{{ $duration }} Jam Sewa</p>
+                            </div>
                         </div>
-                        
-                        <div class="mb-6">
-                            <label for="duration" class="block text-sm font-medium text-gray-300">Durasi (Jam)</label>
-                            {{-- Select Dark Mode dengan focus Gold --}}
-                            <select name="duration" id="duration" 
-                                class="mt-1 block w-full rounded-md bg-gray-800 border-gray-600 text-white shadow-sm focus:border-accent-gold focus:ring-accent-gold">
-                                <option value="1">1 Jam</option>
-                                <option value="2">2 Jam</option>
-                            </select>
-                        </div>
-                        
-                        <p class="text-sm font-semibold text-gray-300 mb-3">Slot Waktu Tersedia ({{ date('Y-m-d') }})</p>
-                        <div class="flex flex-wrap gap-2 mb-6">
-                            {{-- Slot Tersedia (Warna Gold) --}}
-                            <span class="px-3 py-1 text-sm rounded-full bg-accent-gold/90 text-dark-bg cursor-pointer font-bold hover:bg-accent-gold">14:00</span>
-                            <span class="px-3 py-1 text-sm rounded-full bg-accent-gold/90 text-dark-bg cursor-pointer font-bold hover:bg-accent-gold">15:00</span>
-                            {{-- Slot Ter-Booking --}}
-                            <span class="px-3 py-1 text-sm rounded-full bg-gray-600 text-gray-300 cursor-not-allowed">16:00 (Booked)</span>
-                        </div>
 
-                        {{-- Tombol Pesan Sekarang (Solid Gold) --}}
-                        <button type="submit" class="w-full bg-accent-gold text-dark-bg py-3 rounded-lg font-bold text-lg 
-                                                    hover:bg-accent-light transition duration-150 shadow-gold">
-                            Pesan Sekarang!
+                        {{-- Tombol Submit --}}
+                        <button wire:click="createBooking" wire:loading.attr="disabled"
+                            class="group relative w-full py-4 bg-accent-gold hover:bg-white text-dark-bg font-black uppercase text-[11px] tracking-[0.2em] rounded-xl transition-all duration-500 shadow-xl shadow-accent-gold/20 overflow-hidden">
+                            <span wire:loading.remove>Konfirmasi & Bayar</span>
+                            <span wire:loading>Memproses...</span>
+                            
+                            {{-- Efek Kilau --}}
+                            <div class="absolute top-0 -inset-full h-full w-1/2 z-5 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white/20 opacity-40 group-hover:animate-shine"></div>
                         </button>
-                    </form>
-                    
+                        
+                        <p class="text-[8px] text-gray-600 text-center mt-4 uppercase tracking-widest font-bold">
+                            Pembayaran Aman via Transfer Bank
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</x-app-layout>
+</div>
+
+<style>
+    @keyframes shine {
+        100% {
+            left: 125%;
+        }
+    }
+    .animate-shine {
+        animation: shine 0.7s;
+    }
+</style>

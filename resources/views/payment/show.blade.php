@@ -31,7 +31,7 @@
                         <div class="mt-6 md:mt-0 pt-6 md:pt-0 border-t md:border-t-0 md:border-l border-dark-bg/20 md:pl-8">
                             <p class="text-[9px] font-black text-dark-bg/70 uppercase tracking-widest mb-1">Transfer Ke Rekening</p>
                             <p class="text-xl font-black text-dark-bg">BNI 123456789</p>
-                            <p class="text-[11px] font-bold text-dark-bg/80">A.N. F9 MINISOCCER INDONESIA</p>
+                            <p class="text-[11px] font-bold text-dark-bg/80">A.N. F9 MINISOCCER </p>
                         </div>
                     </div>
                 </div>

@@ -14,7 +14,7 @@ class FieldUsageChart extends ChartWidget
 
     protected function getData(): array
     {
-        $results = Booking::where('status', 'confirmed')
+        $results = Booking::whereIn('status', ['completed', 'confirmed'])
             ->select('field_id', DB::raw('count(*) as total'))
             ->groupBy('field_id')
             ->with('field')

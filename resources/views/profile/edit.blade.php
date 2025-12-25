@@ -52,11 +52,6 @@
         </div>
     </header>
 
-    {{-- 
-        BAGIAN INI ADALAH PEMANGGILAN KOMPONEN 
-        Seluruh form input ada di dalam file: 
-        resources/views/livewire/profile-settings.blade.php
-    --}}
     <main>
         @livewire('profile-settings')
     </main>
